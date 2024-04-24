@@ -92,21 +92,31 @@ if 'chat_log' not in st.session_state:
 # Function to handle the message input
 def handle_message():
     # Use the query engine to get a response for the user's message
-    response = query_engine.query(st.session_state.input)
-    
-    # Update the chat log with the user's message and the bot's response
-    st.session_state['chat_log'].append(("You", st.session_state.input))
-    st.session_state['chat_log'].append(("Bot", response))
-    
+    user_input = st.session_state.input
+    if user_input:  # Ensure input is not empty
+        response = query_engine.query(user_input)
+        
+        # Update the chat log with the user's message and the bot's response
+        st.session_state['chat_log'].append(("You", user_input, "https://yourimageurl.com/your_image.png"))  # Replace with your image URL
+        st.session_state['chat_log'].append(("Bot", response, "https://yourimageurl.com/bot_image.png"))  # Replace with bot's image URL
+        
+        # Clear the input field
+        st.session_state.input = ""
+
 # Chat input box
-user_input = st.text_input('Input your message here', key="input", on_change=handle_message)
+st.text_input('Input your message here:', key="input", on_change=handle_message)
 
 # Display chat log
 st.write("Chat History:")
-for speaker, message in st.session_state['chat_log']:
-    st.write(f"{speaker}: {message}")
+for speaker, message, image_url in reversed(st.session_state['chat_log']):
+    col1, col2 = st.columns([1, 4])
+    with col1:
+        st.image(image_url, width=50, output_format="PNG")
+    with col2:
+        st.markdown(f"**{speaker}**")
+        st.markdown(message)
 
-# Display the response object and source text if available
+# Optionally display the response object and source text if available
 if 'response' in st.session_state:
     with st.expander('Response Object'):
         st.json(st.session_state.response)  # Assuming the response is JSON-like data
@@ -115,4 +125,4 @@ if 'response' in st.session_state:
         # If the response includes a method to get the source text, use it
         # Otherwise, you may need to format the source text yourself
         source_text = st.session_state.response.get_formatted_sources() if hasattr(st.session_state.response, 'get_formatted_sources') else "Source text not available."
-        st.write(source_text)
+        st.markdown(source_text)
