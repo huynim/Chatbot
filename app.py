@@ -84,34 +84,39 @@ query_engine = index.as_query_engine()
 
 # Create centered main title 
 st.title('🐟 FSH')
+
 # Initialize session state for chat log if it doesn't exist yet
 if 'chat_log' not in st.session_state:
     st.session_state['chat_log'] = []
 
-# Create a text input box for the user with a placeholder
-user_input = st.text_input('Input your message here', key="input", on_change=None)
+# Function to handle the message input
+def handle_message(message):
+    # Use your query engine to get a response for the user's message
+    response = query_engine.query(message)
+    
+    # Update the chat log with the user's message and the bot's response
+    st.session_state['chat_log'].append(("You", message))
+    st.session_state['chat_log'].append(("Bot", response))
+    
+    return response
 
-# Function to update chat log and clear input box
-def handle_message():
-    if user_input:  # Check if there is an input from the user
-        response = query_engine.query(user_input)  # Get a response from the query engine
-        # Update chat log in session state
-        st.session_state['chat_log'].append(("You", user_input))
-        st.session_state['chat_log'].append(("Bot", response))
-        # Clear the input box
-        st.session_state['input'] = ''
-
-# Button to send the message
-send_button = st.button('Send', on_click=handle_message)
+# Create a text input box for the user with a placeholder and handle the submission
+user_input = st.text_input('Input your message here', key="input")
+if user_input:
+    response = handle_message(user_input)
+    # Clear the input box after submission
+    st.session_state['input'] = ''
 
 # Display chat log
-st.write("Chat:")
+st.write("Chat History:")
 for speaker, message in st.session_state['chat_log']:
     st.write(f"{speaker}: {message}")
 
-# Optionally, display response object and source text
-with st.expander('Response Object'):
-    st.write(response)
+# Display response object and source text only if there is a response
+if 'response' in locals():
+    with st.expander('Response Object'):
+        st.write(response)
 
-with st.expander('Source Text'):
-    st.write(response.get_formatted_sources())
+    with st.expander('Source Text'):
+        # Assuming your response object has a method get_formatted_sources()
+        st.write(response.get_formatted_sources())
