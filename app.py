@@ -85,38 +85,34 @@ query_engine = index.as_query_engine()
 # Create centered main title 
 st.title('🐟 FSH')
 
-# Initialize session state for chat log if it doesn't exist yet
+# Initialize session state for chat log
 if 'chat_log' not in st.session_state:
     st.session_state['chat_log'] = []
 
 # Function to handle the message input
-def handle_message(message):
-    # Use your query engine to get a response for the user's message
-    response = query_engine.query(message)
+def handle_message():
+    # Use the query engine to get a response for the user's message
+    response = query_engine.query(st.session_state.input)
     
     # Update the chat log with the user's message and the bot's response
-    st.session_state['chat_log'].append(("You", message))
+    st.session_state['chat_log'].append(("You", st.session_state.input))
     st.session_state['chat_log'].append(("Bot", response))
     
-    return response
-
-# Create a text input box for the user with a placeholder and handle the submission
-user_input = st.text_input('Input your message here', key="input")
-if user_input:
-    response = handle_message(user_input)
-    # Clear the input box after submission
-    st.session_state['input'] = ''
+# Chat input box
+user_input = st.text_input('Input your message here', key="input", on_change=handle_message)
 
 # Display chat log
 st.write("Chat History:")
 for speaker, message in st.session_state['chat_log']:
     st.write(f"{speaker}: {message}")
 
-# Display response object and source text only if there is a response
-if 'response' in locals():
+# Display the response object and source text if available
+if 'response' in st.session_state:
     with st.expander('Response Object'):
-        st.write(response)
+        st.json(st.session_state.response)  # Assuming the response is JSON-like data
 
     with st.expander('Source Text'):
-        # Assuming your response object has a method get_formatted_sources()
-        st.write(response.get_formatted_sources())
+        # If the response includes a method to get the source text, use it
+        # Otherwise, you may need to format the source text yourself
+        source_text = st.session_state.response.get_formatted_sources() if hasattr(st.session_state.response, 'get_formatted_sources') else "Source text not available."
+        st.write(source_text)
