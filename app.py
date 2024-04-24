@@ -84,17 +84,34 @@ query_engine = index.as_query_engine()
 
 # Create centered main title 
 st.title('🐟 FSH')
-# Create a text input box for the user
-prompt = st.text_input('Input your prompt here')
+# Initialize session state for chat log if it doesn't exist yet
+if 'chat_log' not in st.session_state:
+    st.session_state['chat_log'] = []
 
-# If the user hits enter
-if prompt:
-    response = query_engine.query(prompt)
-    # ...and write it out to the screen
+# Create a text input box for the user with a placeholder
+user_input = st.text_input('Input your message here', key="input", on_change=None)
+
+# Function to update chat log and clear input box
+def handle_message():
+    if user_input:  # Check if there is an input from the user
+        response = query_engine.query(user_input)  # Get a response from the query engine
+        # Update chat log in session state
+        st.session_state['chat_log'].append(("You", user_input))
+        st.session_state['chat_log'].append(("Bot", response))
+        # Clear the input box
+        st.session_state['input'] = ''
+
+# Button to send the message
+send_button = st.button('Send', on_click=handle_message)
+
+# Display chat log
+st.write("Chat:")
+for speaker, message in st.session_state['chat_log']:
+    st.write(f"{speaker}: {message}")
+
+# Optionally, display response object and source text
+with st.expander('Response Object'):
     st.write(response)
-    # Display raw response object
-    with st.expander('Response Object'):
-        st.write(response)
-    # Display source text
-    with st.expander('Source Text'):
-        st.write(response.get_formatted_sources())
+
+with st.expander('Source Text'):
+    st.write(response.get_formatted_sources())
