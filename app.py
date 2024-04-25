@@ -103,19 +103,20 @@ def handle_message():
         # Clear the input field
         st.session_state.input = ""
 
-# Chat input box
-st.text_input('Input your message here:', key="input", on_change=handle_message)
-
-# Display chat log with clear text
+# Display chat log with simple bubble-like format
 st.write("Chat History:")
 for speaker, message, image_url in reversed(st.session_state['chat_log']):
-    st.container()
-    col1, col2 = st.columns([1, 4])
-    with col1:
-        st.image(image_url, width=50, output_format="PNG")
-    with col2:
-        # Use markdown to display the message clearly
-        st.markdown(f"**{speaker}**: {message}")
+    with st.container():
+        col1, col2 = st.columns([1, 5])
+        with col1:
+            st.image(image_url, width=50)
+        with col2:
+            # Create a simple bubble-like effect using markdown blockquotes
+            bubble_text = f"> **{speaker}**: {message}\n"
+            st.markdown(bubble_text)
+
+# Chat input box
+st.text_input('Input your message here:', key="input", on_change=handle_message)
 
 # Optionally display the response object and source text if available
 if 'response' in st.session_state:
