@@ -114,10 +114,7 @@ for speaker, message, image_url in reversed(st.session_state['chat_log']):
             st.markdown(bubble_text)
 
 # Chat input box
-with st.sidebar:
-    user_input = st.text_input('Input your message here:', key="input")
-    if user_input:
-        handle_message(user_input)
+st.text_input('Hva kan jeg hjelpe deg med?', key="input", on_change=handle_message)
 
 # Optionally display the response object and source text if available
 if 'response' in st.session_state:
