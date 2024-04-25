@@ -97,8 +97,8 @@ def handle_message():
         response = query_engine.query(user_input)
         
         # Update the chat log with the user's message and the bot's response
-        st.session_state['chat_log'].append(("You", user_input, "https://yourimageurl.com/your_image.png"))  # Replace with your image URL
-        st.session_state['chat_log'].append(("Bot", response, "https://yourimageurl.com/bot_image.png"))  # Replace with bot's image URL
+        st.session_state['chat_log'].append(("You", user_input, "https://i.nuuls.com/0lLmN.png"))  # Replace with your image URL
+        st.session_state['chat_log'].append(("Bot", response, "https://i.nuuls.com/-Vqc7.png"))  # Replace with bot's image URL
         
         # Clear the input field
         st.session_state.input = ""
@@ -106,15 +106,17 @@ def handle_message():
 # Chat input box
 st.text_input('Input your message here:', key="input", on_change=handle_message)
 
-# Display chat log
+# Display chat log with pseudo speech bubbles
 st.write("Chat History:")
 for speaker, message, image_url in reversed(st.session_state['chat_log']):
     col1, col2 = st.columns([1, 4])
     with col1:
         st.image(image_url, width=50, output_format="PNG")
     with col2:
-        st.markdown(f"**{speaker}**")
-        st.markdown(message)
+        if speaker == "You":
+            st.text_area("", f"{speaker}: {message}", height=50, key=f"msg_{speaker}", disabled=True)
+        else:
+            st.text_area("", f"{speaker}: {message}", height=50, key=f"msg_{speaker}", disabled=True)
 
 # Optionally display the response object and source text if available
 if 'response' in st.session_state:
