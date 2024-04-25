@@ -108,9 +108,9 @@ st.text_input('Hva kan jeg hjelpe deg med?', key="input", on_change=handle_messa
 st.write("Meldinger:")
 for speaker, message, image_url in reversed(st.session_state['chat_log']):
     with st.container():
-        col1, col2 = st.columns([1, 5])
+        col1, col2 = st.columns([1, 2])
         with col1:
-            st.image(image_url, width=20)
+            st.image(image_url, width=50)
         with col2:
             # Create a simple bubble-like effect using markdown blockquotes
             bubble_text = f"> **{speaker}**: {message}\n"
