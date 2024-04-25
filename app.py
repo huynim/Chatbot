@@ -101,6 +101,9 @@ def handle_message():
         # Clear the input field
         st.session_state.input = ""
 
+# Chat input box
+st.text_input('Hva kan jeg hjelpe deg med?', key="input", on_change=handle_message)
+
 # Display chat log
 st.write("Meldinger:")
 for speaker, message, image_url in reversed(st.session_state['chat_log']):
@@ -112,9 +115,6 @@ for speaker, message, image_url in reversed(st.session_state['chat_log']):
             # Create a simple bubble-like effect using markdown blockquotes
             bubble_text = f"> **{speaker}**: {message}\n"
             st.markdown(bubble_text)
-
-# Chat input box
-st.text_input('Hva kan jeg hjelpe deg med?', key="input", on_change=handle_message)
 
 # Optionally display the response object and source text if available
 if 'response' in st.session_state:
