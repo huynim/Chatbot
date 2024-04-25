@@ -6,4 +6,3 @@ llama-index-embeddings-langchain
 sentence-transformers
 langchain
 streamlit
-nltk

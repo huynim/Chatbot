@@ -57,6 +57,7 @@ query_wrapper_prompt = SimpleInputPrompt("{query_str} [/INST]")
 llm = HuggingFaceLLM(context_window=4096,
                     max_new_tokens=256,
                     system_prompt=system_prompt,
+                    generate_kwargs={"temperature": 0.25, "do_sample": False},
                     query_wrapper_prompt=query_wrapper_prompt,
                     model=model,
                     tokenizer=tokenizer)
