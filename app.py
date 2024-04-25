@@ -1,6 +1,4 @@
-# Import streamlit for app dev
 import streamlit as st
-
 # Import transformer classes for generaiton
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 # Import torch for datatype attributes 
@@ -85,23 +83,40 @@ query_engine = index.as_query_engine()
 # Create centered main title 
 st.title('🐟 FSH')
 
-# Initialize session state for chat log
-if 'chat_log' not in st.session_state:
-    st.session_state['chat_log'] = []
-
-# Function to handle the message input
+# Funksjon for å håndtere meldingen og oppdatere chatloggen
 def handle_message():
-    # Use the query engine to get a response for the user's message
-    user_input = st.session_state.input
-    if user_input:  # Ensure input is not empty
-        response = query_engine.query(user_input)
-        
-        # Update the chat log with the user's message and the bot's response
-        st.session_state['chat_log'].append(("Deg", user_input, "https://i.nuuls.com/0lLmN.png"))
-        st.session_state['chat_log'].append(("FSH", response, "https://i.nuuls.com/-Vqc7.png"))
-        
-        # Clear the input field
-        st.session_state.input = ""
+    if 'chat_log' not in st.session_state:
+        st.session_state['chat_log'] = []
+
+    user_message = st.session_state.input
+    st.session_state.chat_log.append(('You', user_message, 'user_image_url'))
+
+    # Tøm inputboksen etter at meldingen er sendt
+    st.session_state.input = ""
+
+# Opprett en placeholder for inputboksen på bunnen av siden
+input_placeholder = st.empty()
+
+# Vis chatloggen
+st.write("Chat History:")
+for speaker, message, image_url in st.session_state.get('chat_log', []):
+    col1, col2 = st.columns([1, 5])
+    with col1:
+        st.image(image_url, width=50)
+    with col2:
+        st.markdown(f"**{speaker}**: {message}")
+
+# Opprett inputboksen inne i placeholderen
+with input_placeholder.container():
+    # 'on_change' kaller funksjonen 'handle_message' hver gang brukeren endrer teksten i inputboksen.
+    # 'args' definerer hvilke argumenter som skal sendes til funksjonen når den kalles.
+    st.text_input('Input your message here:', key="input", on_change=handle_message)
+
+# Scroll ned til inputboksen hver gang siden lastes
+st.script("""
+    const inputBox = document.querySelector('.stTextInput input');
+    inputBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+""")
 
 # Display chat log
 st.write("Meldinger:")
@@ -109,14 +124,11 @@ for speaker, message, image_url in reversed(st.session_state['chat_log']):
     with st.container():
         col1, col2 = st.columns([1, 5])
         with col1:
-            st.image(image_url, width=50)
+            st.image(image_url, width=20)
         with col2:
             # Create a simple bubble-like effect using markdown blockquotes
             bubble_text = f"> **{speaker}**: {message}\n"
             st.markdown(bubble_text)
-
-# Chat input box
-st.text_input('Hva kan jeg hjelpe deg med?', key="input", on_change=handle_message)
 
 # Optionally display the response object and source text if available
 if 'response' in st.session_state:
