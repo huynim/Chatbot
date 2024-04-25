@@ -3,7 +3,7 @@ import streamlit as st
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 # Import torch for datatype attributes 
 import torch
-# Import the prompt wrapper...but for llama index
+# Import the prompt wrapper
 from llama_index.core.prompts.prompts import SimpleInputPrompt
 # Import the llama index HF Wrapper
 from llama_index.llms.huggingface import HuggingFaceLLM
@@ -57,7 +57,7 @@ query_wrapper_prompt = SimpleInputPrompt("{query_str} [/INST]")
 llm = HuggingFaceLLM(context_window=4096,
                     max_new_tokens=256,
                     system_prompt=system_prompt,
-                    generate_kwargs={"temperature": 0.25, "do_sample": False},
+                    generate_kwargs={"temperature": 0.1, "do_sample": True},
                     query_wrapper_prompt=query_wrapper_prompt,
                     model=model,
                     tokenizer=tokenizer)
@@ -116,14 +116,3 @@ for speaker, message, image_url in reversed(st.session_state['chat_log']):
             # Create a simple bubble-like effect using markdown blockquotes
             bubble_text = f"> **{speaker}**: {message}\n"
             st.markdown(bubble_text)
-
-# Optionally display the response object and source text if available
-if 'response' in st.session_state:
-    with st.expander('Response Object'):
-        st.json(st.session_state.response)  # Assuming the response is JSON-like data
-
-    with st.expander('Source Text'):
-        # If the response includes a method to get the source text, use it
-        # Otherwise, you may need to format the source text yourself
-        source_text = st.session_state.response.get_formatted_sources() if hasattr(st.session_state.response, 'get_formatted_sources') else "Source text not available."
-        st.markdown(source_text)
