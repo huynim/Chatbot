@@ -97,14 +97,14 @@ def handle_message():
         response = query_engine.query(user_input)
         
         # Update the chat log with the user's message and the bot's response
-        st.session_state['chat_log'].append(("You", user_input, "https://i.nuuls.com/0lLmN.png"))  # Replace with your image URL
-        st.session_state['chat_log'].append(("Bot", response, "https://i.nuuls.com/-Vqc7.png"))  # Replace with bot's image URL
+        st.session_state['chat_log'].append(("Deg", user_input, "https://i.nuuls.com/0lLmN.png"))
+        st.session_state['chat_log'].append(("FSH", response, "https://i.nuuls.com/-Vqc7.png"))
         
         # Clear the input field
         st.session_state.input = ""
 
-# Display chat log with simple bubble-like format
-st.write("Chat History:")
+# Display chat log
+st.write("Meldinger:")
 for speaker, message, image_url in reversed(st.session_state['chat_log']):
     with st.container():
         col1, col2 = st.columns([1, 5])
@@ -116,7 +116,7 @@ for speaker, message, image_url in reversed(st.session_state['chat_log']):
             st.markdown(bubble_text)
 
 # Chat input box
-st.text_input('Input your message here:', key="input", on_change=handle_message)
+st.text_input('Hva kan jeg hjelpe deg med?', key="input", on_change=handle_message)
 
 # Optionally display the response object and source text if available
 if 'response' in st.session_state:
