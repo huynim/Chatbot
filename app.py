@@ -86,33 +86,35 @@ query_engine = index.as_query_engine()
 # Create centered main title 
 st.title('🐟 FSH')
 
-# Initialize session state for chat_log if it does not exist
+# Initialize session state for chat log
 if 'chat_log' not in st.session_state:
     st.session_state['chat_log'] = []
 
 # Function to handle the message input
 def handle_message():
+    # Use the query engine to get a response for the user's message
     user_input = st.session_state.input
     if user_input:  # Ensure input is not empty
-        # Simulate response for illustrative purposes
-        response = "This is a simulated response."
+        response = query_engine.query(user_input)
         
         # Update the chat log with the user's message and the bot's response
-        st.session_state['chat_log'].append(("Deg", user_input))
-        st.session_state['chat_log'].append(("FSH", response))
+        st.session_state['chat_log'].append(("Deg", user_input, "https://i.nuuls.com/0lLmN.png"))
+        st.session_state['chat_log'].append(("FSH", response, "https://i.nuuls.com/-Vqc7.png"))
         
-        # Clear the input field by setting the key's value to an empty string
+        # Clear the input field
         st.session_state.input = ""
-        
-        # Automatically scroll to the last message (simulate keeping the input at the bottom)
-        st.experimental_rerun()
 
-# Display chat log
-for speaker, message in reversed(st.session_state['chat_log']):  # Display messages in reverse order
-    st.text(f"{speaker}: {message}")
-
-# Chat input box at the bottom
+# Chat input box
 st.text_input('Hva kan jeg hjelpe deg med?', key="input", on_change=handle_message)
 
-# Use an empty container to push the chat input to the bottom
-st.empty()
+# Display chat log
+st.write("Meldinger:")
+for speaker, message, image_url in reversed(st.session_state['chat_log']):
+    with st.container():
+        col1, col2 = st.columns([1, 10])
+        with col1:
+            st.image(image_url, width=50)
+        with col2:
+            # Create a simple bubble-like effect using markdown blockquotes
+            bubble_text = f"> **{speaker}**: {message}\n"
+            st.markdown(bubble_text)
