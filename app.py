@@ -28,7 +28,6 @@ auth_token = "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"
 def get_tokenizer_model():
     # Create tokenizer
     tokenizer = AutoTokenizer.from_pretrained(name, cache_dir='./model/', token=auth_token)
-
     # Create model
     model = AutoModelForCausalLM.from_pretrained(name, cache_dir='./model/'
                             , token=auth_token, torch_dtype=torch.float16, 
