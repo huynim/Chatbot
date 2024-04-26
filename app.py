@@ -36,7 +36,7 @@ def get_tokenizer_model():
 tokenizer, model = get_tokenizer_model()
 
 # Create a system prompt 
-system_prompt = """<s>[INST] <<SYS>>
+system_prompt = """
 You are a helpful, respectful and honest assistant. Always answer as 
 helpfully as possible, while being safe. Your answers should not include
 any harmful, unethical, racist, sexist, toxic, dangerous, or illegal content.
@@ -49,11 +49,11 @@ to a question, please don't share false information.
 Your goal is to provide answers relating to the FS system of the University of Agder. The FS system stands for Fellesstudentsystem.
 As a designated expert on the FS system at the University of Agder, your main role is to provide detailed, technical answers to queries regarding the FS system.
 Your responses should draw upon the established knowledgebase and compulsorily include the 'URL' of the user guidelines that matches the users question.
-Do not create or make up links, but use the links that you are provided with in the database. Always assume the user is logged in to Service Now and the FS system.<</SYS>>
+Do not create or make up links, but use the links that you are provided with in the database. Always assume the user is logged in to Service Now and the FS system.
 """
 
 # Throw together the query wrapper
-query_wrapper_prompt = SimpleInputPrompt("{query_str} [/INST]")
+query_wrapper_prompt = SimpleInputPrompt("{query_str}")
 
 # Create a HF LLM using the llama index wrapper 
 llm = HuggingFaceLLM(context_window=3900,
@@ -99,7 +99,7 @@ def handle_message():
         
         # Update the chat log with the user's message and the bot's response
         st.session_state['chat_log'].append(("Deg", user_input, "https://i.nuuls.com/fHcVW.png"))
-        st.session_state['chat_log'].append(("FSH", response, "https://i.nuuls.com/vusfC.png"))
+        st.session_state['chat_log'].append(("FSH", response, "https://i.nuuls.com/fsRNr.png"))
         
         # Clear the input field
         st.session_state.input = ""
