@@ -66,7 +66,7 @@ llm = HuggingFaceLLM(context_window=3900,
 
 # Create and dl embeddings instance  
 embeddings=LangchainEmbedding(
-    HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    HuggingFaceEmbeddings(model_name="BAAI/bge-small-en-v1.5")
 )
 
 # Create new service context instance
@@ -108,7 +108,6 @@ def handle_message():
 st.text_input('Hva kan jeg hjelpe deg med?', key="input", on_change=handle_message)
 
 # Display chat log
-st.write("Meldinger:")
 for speaker, message, image_url in reversed(st.session_state['chat_log']):
     with st.container():
         col1, col2 = st.columns([1, 10])
