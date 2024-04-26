@@ -63,14 +63,14 @@ query_wrapper_prompt = SimpleInputPrompt("{query_str} [/INST]")
 llm = HuggingFaceLLM(context_window=4096,
                     max_new_tokens=256,
                     system_prompt=system_prompt,
-                    generate_kwargs={"temperature": 0.1, "do_sample": True},
+                    generate_kwargs={"temperature": 0.1, "do_sample": False},
                     query_wrapper_prompt=query_wrapper_prompt,
                     model=model,
                     tokenizer=tokenizer)
 
 # Create and dl embeddings instance  
 embeddings=LangchainEmbedding(
-    HuggingFaceEmbeddings(model_name="BAAI/bge-small-en-v1.5")
+    HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 )
 
 # Create new service context instance
