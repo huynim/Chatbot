@@ -98,8 +98,8 @@ def handle_message():
         response = query_engine.query(user_input)
         
         # Update the chat log with the user's message and the bot's response
-        st.session_state['chat_log'].append(("Deg", user_input, "https://i.nuuls.com/0lLmN.png"))
-        st.session_state['chat_log'].append(("FSH", response, "https://i.nuuls.com/-Vqc7.png"))
+        st.session_state['chat_log'].append(("Deg", user_input, "https://i.nuuls.com/fHcVW.png"))
+        st.session_state['chat_log'].append(("FSH", response, "https://i.nuuls.com/vusfC.png"))
         
         # Clear the input field
         st.session_state.input = ""
