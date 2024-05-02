@@ -20,7 +20,7 @@ from llama_index.core import VectorStoreIndex, download_loader
 from llama_index.core import SimpleDirectoryReader
 
 # Define variable to hold llama2 weights naming 
-name = "meta-llama/Meta-Llama-3-8B"
+name = "RuterNorway/Llama-2-7b-chat-norwegian"
 # Set auth token variable from hugging face 
 auth_token = "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"
 
@@ -91,7 +91,7 @@ if "chat_engine" not in st.session_state.keys(): # Initialize the chat engine
                                                                 " relevant UIA ServiceNow guidance referenced in the query, to avoid referencing incorrect or non-"
                                                                 " existent links. If no link exists for the given guidance, do not provide a link."
                                                                 ),
-                                                            verbose=True)
+                                                            )
 
 if prompt := st.chat_input("Your question"): # Prompt for user input and save to chat history
     st.session_state.messages.append({"role": "user", "content": prompt})
