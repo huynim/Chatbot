@@ -62,13 +62,27 @@ index = VectorStoreIndex.from_documents(documents)
 chat_engine = index.as_query_engine()
 
 # Create centered main title 
-col1, col2 = st.columns([1, 10])
+col1, col2, col3 = st.columns(3)
 
 with col1:
-    st.image("https://i.nuuls.com/fsRNr.png", width=70)
+    st.write(' ')
+
+with col2:
+    st.image("https://i.nuuls.com/fsRNr.png", width=100)
+
+with col3:
+    st.write(' ')
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.write(' ')
 
 with col2:
     st.title('FS-H')
+
+with col3:
+    st.write(' ')
 
 # Initialize chat history
 if "messages" not in st.session_state.keys(): # Initialize the chat message history
