@@ -20,7 +20,7 @@ from llama_index.core import VectorStoreIndex, download_loader
 from llama_index.core import SimpleDirectoryReader
 
 # Define variable to hold llama2 weights naming 
-name = "meta-llama/Meta-Llama-3-8B-Instruct"
+name = "bineric/NorskGPT-Llama-7B-v0.1"
 # Set auth token variable from hugging face 
 auth_token = "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"
 
@@ -67,7 +67,7 @@ st.title('🐟 FSH')
 # Initialize chat history
 if "messages" not in st.session_state.keys(): # Initialize the chat message history
     st.session_state.messages = [
-        {"role": "assistant", "content": "Spør meg et spørsmål om UIA sitt FS system!"}
+        {"role": "assistant", "content": "Hei, spør meg et spørsmål om Felles studentsystem!"}
     ]
 
 @st.cache_resource(show_spinner=False)
