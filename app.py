@@ -59,7 +59,7 @@ documents = reader.load_data()
 # Create an index - we'll be able to query this in a sec
 index = VectorStoreIndex.from_documents(documents)
 # Setup index query engine using LLM 
-query_engine = index.as_query_engine()
+chat_engine = index.as_query_engine()
 
 # Create centered main title 
 st.title('🐟 FSH')
@@ -73,7 +73,7 @@ if "messages" not in st.session_state.keys(): # Initialize the chat message hist
 @st.cache_resource(show_spinner=False)
 def load_data():
     with st.spinner(text="Loading and indexing the FSH knowledgebase – hang tight! This should take 1-2 minutes."):
-        reader = SimpleDirectoryReader(input_dir="./data", recursive=True)
+        reader = SimpleDirectoryReader(input_dir="./data")
         documents = reader.load_data()
         index = VectorStoreIndex.from_documents(documents)
         return index
