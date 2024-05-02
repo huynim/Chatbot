@@ -63,6 +63,13 @@ chat_engine = index.as_query_engine()
 
 # Create centered main title 
 st.title('🐟 FSH')
+col1, col2, = st.columns([1, 10])
+
+with col1:
+    st.write('FSH')
+
+with col2:
+    st.image("https://i.nuuls.com/fsRNr.png", width=50)
 
 # Initialize chat history
 if "messages" not in st.session_state.keys(): # Initialize the chat message history
@@ -72,7 +79,7 @@ if "messages" not in st.session_state.keys(): # Initialize the chat message hist
 
 @st.cache_resource(show_spinner=False)
 def load_data():
-    with st.spinner(text="Laster inn kunnskapsbasen..."):
+    with st.spinner(text="Laster inn kunnskapsbasen. Dette kan ta noen minutter."):
         reader = SimpleDirectoryReader(input_dir="./data")
         documents = reader.load_data()
         index = VectorStoreIndex.from_documents(documents)
