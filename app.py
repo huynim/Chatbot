@@ -20,7 +20,7 @@ from llama_index.core import VectorStoreIndex, download_loader
 from llama_index.core import SimpleDirectoryReader
 
 # Define variable to hold llama2 weights naming 
-name = "RuterNorway/Llama-2-7b-chat-norwegian"
+name = "meta-llama/Meta-Llama-3-8B-Instruct"
 # Set auth token variable from hugging face 
 auth_token = "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"
 
@@ -72,7 +72,7 @@ if "messages" not in st.session_state.keys(): # Initialize the chat message hist
 
 @st.cache_resource(show_spinner=False)
 def load_data():
-    with st.spinner(text="Loading and indexing the FSH knowledgebase – hang tight! This should take 1-2 minutes."):
+    with st.spinner(text="Laster inn kunnskapsbasen..."):
         reader = SimpleDirectoryReader(input_dir="./data")
         documents = reader.load_data()
         index = VectorStoreIndex.from_documents(documents)
@@ -93,7 +93,7 @@ if "chat_engine" not in st.session_state.keys(): # Initialize the chat engine
                                                                 ),
                                                             )
 
-if prompt := st.chat_input("Your question"): # Prompt for user input and save to chat history
+if prompt := st.chat_input("Skriv en melding"): # Prompt for user input and save to chat history
     st.session_state.messages.append({"role": "user", "content": prompt})
 
 for message in st.session_state.messages: # Display the prior chat messages
@@ -103,7 +103,7 @@ for message in st.session_state.messages: # Display the prior chat messages
 # If last message is not from assistant, generate a new response
 if st.session_state.messages[-1]["role"] != "assistant":
     with st.chat_message("assistant"):
-        with st.spinner("Thinking..."):
+        with st.spinner("Tenker..."):
             response = st.session_state.chat_engine.chat(prompt)
             st.write(response.response)
             message = {"role": "assistant", "content": response.response}
