@@ -68,8 +68,7 @@ with col1:
     st.write(' ')
 
 with col2:
-    st.image("https://i.nuuls.com/fsRNr.png", width=65)
-    st.title('FSH')
+    st.title('🐟 FSH')
 
 with col3:
     st.write(' ')
