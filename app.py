@@ -68,18 +68,8 @@ with col1:
     st.write(' ')
 
 with col2:
-    st.image("https://i.nuuls.com/fsRNr.png", width=100)
-
-with col3:
-    st.write(' ')
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    st.write(' ')
-
-with col2:
-    st.title('FS-H')
+    st.image("https://i.nuuls.com/fsRNr.png", width=65)
+    st.title('FSH')
 
 with col3:
     st.write(' ')
