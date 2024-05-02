@@ -35,32 +35,10 @@ def get_tokenizer_model():
     return tokenizer, model
 tokenizer, model = get_tokenizer_model()
 
-# Create a system prompt 
-system_prompt = """
-You are a helpful, respectful and honest assistant. Always answer as 
-helpfully as possible, while being safe. Your answers should not include
-any harmful, unethical, racist, sexist, toxic, dangerous, or illegal content.
-Please ensure that your responses are socially unbiased and positive in nature.
-
-If a question does not make any sense, or is not factually coherent, explain 
-why instead of answering something not correct. If you don't know the answer 
-to a question, please don't share false information.
-
-Your goal is to provide answers relating to the FS system of the University of Agder. The FS system stands for Fellesstudentsystem.
-As a designated expert on the FS system at the University of Agder, your main role is to provide detailed, technical answers to queries regarding the FS system.
-Your responses should draw upon the established knowledgebase and compulsorily include the 'URL' of the user guidelines that matches the users question.
-Do not create or make up links, but use the links that you are provided with in the database. Always assume the user is logged in to Service Now and the FS system.
-"""
-
-# Throw together the query wrapper
-query_wrapper_prompt = SimpleInputPrompt("{query_str}")
-
 # Create a HF LLM using the llama index wrapper 
 llm = HuggingFaceLLM(context_window=3900,
                     max_new_tokens=256,
-                    system_prompt=system_prompt,
                     generate_kwargs={"temperature": 0.1, "do_sample": False},
-                    query_wrapper_prompt=query_wrapper_prompt,
                     model=model,
                     tokenizer=tokenizer)
 
@@ -86,34 +64,47 @@ query_engine = index.as_query_engine()
 # Create centered main title 
 st.title('🐟 FSH')
 
-# Initialize session state for chat log
-if 'chat_log' not in st.session_state:
-    st.session_state['chat_log'] = []
+# Initialize chat history
+if "messages" not in st.session_state.keys(): # Initialize the chat message history
+    st.session_state.messages = [
+        {"role": "assistant", "content": "Spør meg et spørsmål om UIA sitt FS system!"}
+    ]
 
-# Function to handle the message input
-def handle_message():
-    # Use the query engine to get a response for the user's message
-    user_input = st.session_state.input
-    if user_input:  # Ensure input is not empty
-        response = query_engine.query(user_input)
-        
-        # Update the chat log with the user's message and the bot's response
-        st.session_state['chat_log'].append(("Deg", user_input, "https://i.nuuls.com/fHcVW.png"))
-        st.session_state['chat_log'].append(("FSH", response, "https://i.nuuls.com/fsRNr.png"))
-        
-        # Clear the input field
-        st.session_state.input = ""
+@st.cache_resource(show_spinner=False)
+def load_data():
+    with st.spinner(text="Loading and indexing the FSH knowledgebase – hang tight! This should take 1-2 minutes."):
+        reader = SimpleDirectoryReader(input_dir="./data", recursive=True)
+        documents = reader.load_data()
+        index = VectorStoreIndex.from_documents(documents)
+        return index
 
-# Chat input box
-st.text_input('Hva kan jeg hjelpe deg med?', key="input", on_change=handle_message)
+index = load_data()
 
-# Display chat log
-for speaker, message, image_url in reversed(st.session_state['chat_log']):
-    with st.container():
-        col1, col2 = st.columns([1, 10])
-        with col1:
-            st.image(image_url, width=50)
-        with col2:
-            # Create a simple bubble-like effect using markdown blockquotes
-            bubble_text = f"> **{speaker}**: {message}\n"
-            st.markdown(bubble_text)
+if "chat_engine" not in st.session_state.keys(): # Initialize the chat engine
+        st.session_state.chat_engine = index.as_chat_engine(chat_mode="context",
+                                                            llm=llm,
+                                                            system_prompt =(
+                                                                "Always respond in the query's language. As an expert on the FS system at the University of Agder,"
+                                                                " your primary role is to provide detailed answers based on the knowledgebase. Provide all"
+                                                                " the instructions from the article body in a structural way so the user can follow it easily. Also ensure"
+                                                                " that each response includes the exact URL from the 'URL' column of our knowledgebase for the"
+                                                                " relevant UIA ServiceNow guidance referenced in the query, to avoid referencing incorrect or non-"
+                                                                " existent links. If no link exists for the given guidance, do not provide a link."
+                                                                ),
+                                                            verbose=True)
+
+if prompt := st.chat_input("Your question"): # Prompt for user input and save to chat history
+    st.session_state.messages.append({"role": "user", "content": prompt})
+
+for message in st.session_state.messages: # Display the prior chat messages
+    with st.chat_message(message["role"]):
+        st.write(message["content"])
+
+# If last message is not from assistant, generate a new response
+if st.session_state.messages[-1]["role"] != "assistant":
+    with st.chat_message("assistant"):
+        with st.spinner("Thinking..."):
+            response = st.session_state.chat_engine.chat(prompt)
+            st.write(response.response)
+            message = {"role": "assistant", "content": response.response}
+            st.session_state.messages.append(message) # Add response to message history
