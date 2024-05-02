@@ -20,7 +20,7 @@ from llama_index.core import VectorStoreIndex, download_loader
 from llama_index.core import SimpleDirectoryReader
 
 # Define variable to hold llama2 weights naming 
-name = "bineric/NorskGPT-Llama3-8b"
+name = "meta-llama/Meta-Llama-3-8B"
 # Set auth token variable from hugging face 
 auth_token = "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"
 
