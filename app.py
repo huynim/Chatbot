@@ -56,13 +56,13 @@ settings.embed_model = embeddings
 reader = SimpleDirectoryReader(input_dir="./data")
 documents = reader.load_data()
 
-# Create an index - we'll be able to query this in a sec
+# Create an index
 index = VectorStoreIndex.from_documents(documents)
 # Setup index query engine using LLM 
 chat_engine = index.as_query_engine()
 
 # Create title
-st.markdown("<div style='display: flex; justify-content: center; align-items: center;'><img src='https://i.nuuls.com/fsRNr.png' width='60'><h1 style='text-align: center; color: red;'>FSH</h1></div>", unsafe_allow_html=True)
+st.markdown("<div style='display: flex; justify-content: center; align-items: center;'><img src='https://i.nuuls.com/fsRNr.png' width='60'><h1 style='margin-left: 8px; text-align: center; color: white; font-family: Arial, Helvetica, sans-serif; -webkit-text-stroke-width: 2px; -webkit-text-stroke-color: #B00B13;'>FSH</h1></div>", unsafe_allow_html=True)
 
 # Initialize chat history
 if "messages" not in st.session_state.keys(): # Initialize the chat message history
@@ -90,6 +90,11 @@ if "chat_engine" not in st.session_state.keys(): # Initialize the chat engine
                                                                 " that each response includes the exact URL from the 'URL' column of our knowledgebase for the"
                                                                 " relevant UIA ServiceNow guidance referenced in the query, to avoid referencing incorrect or non-"
                                                                 " existent links. If no link exists for the given guidance, do not provide a link."
+                                                                " FS system stands for Felles studentsystem, and is a Norwegian term that translates to "common student system" in English."
+                                                                " It refers to a shared information system used by educational institutions in Norway to manage student data,"
+                                                                " such as enrollment, grades, attendance, and other administrative tasks related to student management."
+                                                                " This system facilitates communication and collaboration among different educational institutions, ensuring consistency"
+                                                                " and efficiency in managing student records and academic information."
                                                                 ),
                                                             )
 
