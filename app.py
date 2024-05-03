@@ -90,7 +90,7 @@ if "chat_engine" not in st.session_state.keys(): # Initialize the chat engine
                                                                 " that each response includes the exact URL from the 'URL' column of our knowledgebase for the"
                                                                 " relevant UIA ServiceNow guidance referenced in the query, to avoid referencing incorrect or non-"
                                                                 " existent links. If no link exists for the given guidance, do not provide a link."
-                                                                " FS system stands for Felles studentsystem, and is a Norwegian term that translates to "common student system" in English."
+                                                                " FS system stands for Felles studentsystem, and is a Norwegian term that translates to common student system in English."
                                                                 " It refers to a shared information system used by educational institutions in Norway to manage student data,"
                                                                 " such as enrollment, grades, attendance, and other administrative tasks related to student management."
                                                                 " This system facilitates communication and collaboration among different educational institutions, ensuring consistency"
