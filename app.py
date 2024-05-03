@@ -67,7 +67,7 @@ with col1:
     st.image('https://i.nuuls.com/fsRNr.png', width=60)
 with col2:
     st.title('FSH')
-    st.text('')
+    st.write(' ')
 
 # Initialize chat history
 if "messages" not in st.session_state.keys(): # Initialize the chat message history
