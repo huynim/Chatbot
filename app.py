@@ -61,13 +61,26 @@ index = VectorStoreIndex.from_documents(documents)
 # Setup index query engine using LLM 
 chat_engine = index.as_query_engine()
 
-# Create centered main title 
-col1, mid, col2 = st.columns([1,1,20])
-with col1:
+# Create title
+left, right = st.columns(2)
+
+with right:
+    st.markdown("""
+# FSH
+""")
+
+with left:
     st.image('https://i.nuuls.com/fsRNr.png', width=60)
-with col2:
-    st.title('FSH')
-    st.write(' ')
+
+st.write(
+    """<style>
+    [data-testid="stHorizontalBlock"] {
+        align-items: center;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 # Initialize chat history
 if "messages" not in st.session_state.keys(): # Initialize the chat message history
