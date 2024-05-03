@@ -62,7 +62,18 @@ index = VectorStoreIndex.from_documents(documents)
 chat_engine = index.as_query_engine()
 
 # Create title
-st.markdown("<div style='display: flex; justify-content: center; align-items: center;'><img src='https://i.nuuls.com/fsRNr.png' width='60'><h1 style='margin-left: 8px; text-align: center; color: white; font-family: Arial, Helvetica, sans-serif; -webkit-text-stroke-width: 2px; -webkit-text-stroke-color: #B00B13;'>FSH</h1></div>", unsafe_allow_html=True)
+st.markdown('''
+    <div style='display: flex; justify-content: center; align-items: center;'>
+        <img src='https://i.nuuls.com/fsRNr.png' width='60'>
+        <h1 style='margin-left: 8px; 
+            text-align: center; 
+            color: white; font-family: Arial, Helvetica, sans-serif; 
+            -webkit-text-stroke-width: 2px; 
+            -webkit-text-stroke-color: #B00B13;'>
+            FSH
+        </h1>
+    </div>
+''', unsafe_allow_html=True)
 
 # Initialize chat history
 if "messages" not in st.session_state.keys(): # Initialize the chat message history
