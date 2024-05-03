@@ -19,7 +19,7 @@ from llama_index.core import ServiceContext
 from llama_index.core import VectorStoreIndex, download_loader
 from llama_index.core import SimpleDirectoryReader
 
-# Define variable to hold llama2 weights naming 
+# Define variable to hold model weights naming 
 name = "bineric/NorskGPT-Llama-7B-v0.1"
 # Set auth token variable from hugging face 
 auth_token = "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"
@@ -42,7 +42,7 @@ llm = HuggingFaceLLM(context_window=3900,
                     model=model,
                     tokenizer=tokenizer)
 
-# Create and dl embeddings instance  
+# Create and download embeddings instance 
 embeddings=LangchainEmbedding(
     HuggingFaceEmbeddings(model_name="BAAI/bge-small-en-v1.5")
 )
@@ -61,10 +61,10 @@ index = VectorStoreIndex.from_documents(documents)
 # Setup index query engine using LLM 
 chat_engine = index.as_query_engine()
 
-# Create title
+# Create title and image
 st.markdown('''
     <div style='display: flex; justify-content: center; align-items: center;'>
-        <img src='https://i.nuuls.com/fsRNr.png' width='60'>
+        <img src='FSH.png' width='60' style='border-radius: 50%'>
         <h1 style='margin-left: 8px; 
             text-align: center; 
             color: white; font-family: Arial, Helvetica, sans-serif; 
