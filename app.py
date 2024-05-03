@@ -63,8 +63,7 @@ chat_engine = index.as_query_engine()
 
 # Create centered main title 
 with st.columns(3)[1]:
-     st.image("https://i.nuuls.com/fsRNr.png", width=50)
-     st.title("FSH")
+     st.image("https://i.nuuls.com/fsRNr.png", width=50).title("FSH")
 
 # Initialize chat history
 if "messages" not in st.session_state.keys(): # Initialize the chat message history
