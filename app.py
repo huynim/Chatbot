@@ -21,16 +21,14 @@ from llama_index.core import SimpleDirectoryReader
 
 # Define variable to hold model weights naming 
 name = "bineric/NorskGPT-Llama-7B-v0.1"
-# Set auth token variable from hugging face 
-auth_token = "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"
 
 @st.cache_resource
 def get_tokenizer_model():
     # Create tokenizer
-    tokenizer = AutoTokenizer.from_pretrained(name, cache_dir='./model/', token=auth_token)
+    tokenizer = AutoTokenizer.from_pretrained(name, cache_dir='./model/')
     # Create model
     model = AutoModelForCausalLM.from_pretrained(name, cache_dir='./model/'
-                            , token=auth_token, torch_dtype=torch.float16, 
+                            , torch_dtype=torch.float16, 
                             rope_scaling={"type": "dynamic", "factor": 2}, load_in_8bit=True) 
     return tokenizer, model
 tokenizer, model = get_tokenizer_model()
