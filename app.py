@@ -63,8 +63,7 @@ chat_engine = index.as_query_engine()
 st.markdown('''
     <div style='display: flex; justify-content: center; align-items: center;'>
         <img src='https://i.nuuls.com/f_HOD.png' width='60' style='border-radius: 50%'>
-        <h1 style='margin-left: 8px; 
-            text-align: center; 
+        <h1 style='text-align: center; 
             color: white; font-family: Impact, Arial, Helvetica, sans-serif; 
             -webkit-text-stroke-width: 1.5px; 
             -webkit-text-stroke-color: #C8102E;'>
