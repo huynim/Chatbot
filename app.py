@@ -65,9 +65,9 @@ st.markdown('''
         <img src='FSH.png' width='60' style='border-radius: 50%'>
         <h1 style='margin-left: 8px; 
             text-align: center; 
-            color: white; font-family: Arial, Helvetica, sans-serif; 
+            color: white; font-family: Impact, Arial, Helvetica, sans-serif; 
             -webkit-text-stroke-width: 2px; 
-            -webkit-text-stroke-color: #B00B13;'>
+            -webkit-text-stroke-color: #C8102E;'>
             FSH
         </h1>
     </div>
