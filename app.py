@@ -62,7 +62,7 @@ chat_engine = index.as_query_engine()
 # Create title and image
 st.markdown('''
     <div style='display: flex; justify-content: center; align-items: center;'>
-        <img src='FSH.png' width='60' style='border-radius: 50%'>
+        <img src='https://i.nuuls.com/f_HOD.png' width='60' style='border-radius: 50%'>
         <h1 style='margin-left: 8px; 
             text-align: center; 
             color: white; font-family: Impact, Arial, Helvetica, sans-serif; 
