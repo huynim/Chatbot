@@ -66,7 +66,7 @@ st.markdown('''
         <h1 style='margin-left: 8px; 
             text-align: center; 
             color: white; font-family: Impact, Arial, Helvetica, sans-serif; 
-            -webkit-text-stroke-width: 2px; 
+            -webkit-text-stroke-width: 1.5px; 
             -webkit-text-stroke-color: #C8102E;'>
             FSH
         </h1>
