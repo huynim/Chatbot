@@ -94,10 +94,8 @@ if "chat_engine" not in st.session_state.keys(): # Initialize the chat engine
                                                             system_prompt =(
                                                                 "Always respond in the query's language. As an expert on the FS system at the University of Agder,"
                                                                 " your primary role is to provide detailed answers based on the knowledgebase. Provide all"
-                                                                " the instructions from the article body in a structural way so the user can follow it easily. Also ensure"
-                                                                " that each response includes the exact URL from the 'URL' column of our knowledgebase for the"
-                                                                " relevant UIA ServiceNow guidance referenced in the query, to avoid referencing incorrect or non-"
-                                                                " existent links. If no link exists for the given guidance, do not provide a link."
+                                                                " the instructions from the article body in a structural way so the user can follow it easily."
+                                                                " Always answer short and precise. Be very specific and to the point."
                                                                 " FS system stands for Felles studentsystem, and is a Norwegian term that translates to common student system in English."
                                                                 " It refers to a shared information system used by educational institutions in Norway to manage student data,"
                                                                 " such as enrollment, grades, attendance, and other administrative tasks related to student management."
