@@ -35,7 +35,7 @@ tokenizer, model = get_tokenizer_model()
 
 # Create a HF LLM using the llama index wrapper 
 llm = HuggingFaceLLM(context_window=3900,
-                    max_new_tokens=256,
+                    max_new_tokens=512,
                     generate_kwargs={"temperature": 0.1, "do_sample": False},
                     model=model,
                     tokenizer=tokenizer)
