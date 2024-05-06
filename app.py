@@ -27,15 +27,15 @@ def get_tokenizer_model():
     # Create tokenizer
     tokenizer = AutoTokenizer.from_pretrained(name, cache_dir='./model/')
     # Create model
-    model = AutoModelForCausalLM.from_pretrained(name, cache_dir='./model/'
-                            , torch_dtype=torch.float16, 
-                            rope_scaling={"type": "dynamic", "factor": 2}, load_in_8bit=True) 
+    model = AutoModelForCausalLM.from_pretrained(name, cache_dir='./model/', 
+                                                 torch_dtype=torch.float16, 
+                                                 rope_scaling={"type": "dynamic", "factor": 2}, load_in_8bit=True) 
     return tokenizer, model
 tokenizer, model = get_tokenizer_model()
 
 # Create a HF LLM using the llama index wrapper 
 llm = HuggingFaceLLM(context_window=3900,
-                    max_new_tokens=512,
+                    max_new_tokens=350,
                     generate_kwargs={"temperature": 0.1, "do_sample": False},
                     model=model,
                     tokenizer=tokenizer)
