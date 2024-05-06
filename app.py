@@ -96,11 +96,9 @@ if "chat_engine" not in st.session_state.keys(): # Initialize the chat engine
                                                                 " your primary role is to provide detailed answers based on the knowledgebase. Provide all"
                                                                 " the instructions from the article body in a structural way so the user can follow it easily."
                                                                 " Always answer short and precise. Be very specific and to the point."
-                                                                " FS system stands for Felles studentsystem, and is a Norwegian term that translates to common student system in English."
-                                                                " It refers to a shared information system used by educational institutions in Norway to manage student data,"
-                                                                " such as enrollment, grades, attendance, and other administrative tasks related to student management."
-                                                                " This system facilitates communication and collaboration among different educational institutions, ensuring consistency"
-                                                                " and efficiency in managing student records and academic information."
+                                                                " FS system stands for Felles studentsystem, and is a student information system consisting of"
+                                                                " databases, integrations, and user applications. FS is used by almost all Norwegian universities" 
+                                                                " and colleges. The FS database contains the institution's own student and study data."
                                                                 ),
                                                             )
 
