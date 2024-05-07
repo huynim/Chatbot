@@ -17,3 +17,7 @@ pip install -r requirements.txt
 ```bash
 streamlit run app.py
 ```
+# Google Colab
+Alternativt kan denne koden kjøres gjennom Google Colab:
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1vWZkgj2-CwFb4WwhI6KH1OPHAEcQA0jB?usp=sharing)
