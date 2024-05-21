@@ -67,7 +67,7 @@ st.markdown('''
             color: white; font-family: Impact, Arial, Helvetica, sans-serif; 
             -webkit-text-stroke-width: 1.5px; 
             -webkit-text-stroke-color: #C8102E;'>
-            FSH
+            FSH basert på Llama 2
         </h1>
     </div>
 ''', unsafe_allow_html=True)
