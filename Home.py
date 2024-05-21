@@ -20,4 +20,22 @@ async def generate_pdf(url, pdf_path):
     await browser.close()
 
 st.text_input("URL", key="url", placeholder="Skriv inn lenken")
-asyncio.get_event_loop().run_until_complete(generate_pdf(st.session_state.url, 'document.pdf'))
+
+if 'generate_pdf_button' not in st.session_state:
+    st.session_state.generate_pdf_button = False
+
+def set_button_flag():
+    st.session_state.generate_pdf_button = True
+
+st.button("Generate PDF", on_click=set_button_flag)
+
+if st.session_state.generate_pdf_button:
+    url = st.session_state.url
+    if url:
+        st.write("Generating PDF...")
+        asyncio.run(generate_pdf(url, 'document.pdf'))
+        st.write("PDF generated: document.pdf")
+    else:
+        st.write("Please enter a URL.")
+    # Reset the button flag
+    st.session_state.generate_pdf_button = False
