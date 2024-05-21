@@ -53,7 +53,7 @@ if st.session_state.generate_pdf_button:
     url = st.session_state.url
     if url:
         st.write("Laster ned nettsiden...")
-        pdf_path = asyncio.run(generate_pdf(url, 'document.pdf'))
+        pdf_path = asyncio.run(generate_pdf(url))
         st.write(f"Nettside lastet ned: {pdf_path}")
     else:
         st.write("Please enter a URL.")
