@@ -12,7 +12,7 @@ st.set_page_config(
 # Ensure the 'data' directory exists
 os.makedirs('data', exist_ok=True)
 
-async def generate_pdf(url, pdf_path):
+async def generate_pdf(url):
     async with async_playwright() as p:
         browser = await p.chromium.launch()
         page = await browser.new_page()
