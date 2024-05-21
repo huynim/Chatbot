@@ -12,10 +12,14 @@ source venv/bin/activate
 ```bash
 pip install -r requirements.txt
 ```
-5. Legg dine dokumenter i `data` mappen.
-6. Kjør Streamlit:
+5. Installer Playwright:
 ```bash
-streamlit run app.py
+playwright install
+```
+6. Legg dine lokale dokumenter i `data` mappen.
+7. Kjør Streamlit:
+```bash
+streamlit run Home.py
 ```
 # Google Colab
 Alternativt kan denne koden kjøres gjennom Google Colab:
