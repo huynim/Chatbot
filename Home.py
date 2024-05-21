@@ -1,6 +1,7 @@
 import streamlit as st
 import asyncio
-from pyppeteer import launch
+from playwright.async_api import async_playwright
+import os
 
 st.set_page_config(
     page_title="Home",
@@ -9,15 +10,19 @@ st.set_page_config(
 
 st.sidebar.success("Select a demo above.")
 
+# Ensure the 'data' directory exists
+os.makedirs('data', exist_ok=True)
+
 async def generate_pdf(url, pdf_path):
-    browser = await launch()
-    page = await browser.newPage()
-    
-    await page.goto(url)
-    
-    await page.pdf({'path': pdf_path, 'format': 'A4'})
-    
-    await browser.close()
+    async with async_playwright() as p:
+        browser = await p.chromium.launch()
+        page = await browser.new_page()
+        
+        await page.goto(url)
+        
+        await page.pdf(path=pdf_path, format='A4')
+        
+        await browser.close()
 
 st.text_input("URL", key="url", placeholder="Skriv inn lenken")
 
@@ -33,8 +38,9 @@ if st.session_state.generate_pdf_button:
     url = st.session_state.url
     if url:
         st.write("Generating PDF...")
-        asyncio.run(generate_pdf(url, 'document.pdf'))
-        st.write("PDF generated: document.pdf")
+        pdf_path = os.path.join('data', 'document.pdf')
+        asyncio.run(generate_pdf(url, pdf_path))
+        st.write(f"PDF generated: {pdf_path}")
     else:
         st.write("Please enter a URL.")
     # Reset the button flag
