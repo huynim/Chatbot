@@ -51,11 +51,15 @@ settings.chunk_size = 1024
 settings.llm = llm
 settings.embed_model = embeddings
 
-reader = SimpleDirectoryReader(input_dir="./data")
-documents = reader.load_data()
+# Function to load data
+def load_data():
+    reader = SimpleDirectoryReader(input_dir="./data")
+    documents = reader.load_data()
+    index = VectorStoreIndex.from_documents(documents)
+    return index
 
-# Create an index
-index = VectorStoreIndex.from_documents(documents)
+index = load_data()
+
 # Setup index query engine using LLM 
 chat_engine = index.as_query_engine()
 
@@ -78,29 +82,19 @@ if "messages" not in st.session_state.keys(): # Initialize the chat message hist
         {"role": "assistant", "content": "Hei, spør meg et spørsmål om Felles studentsystem!"}
     ]
 
-@st.cache_resource(show_spinner=False)
-def load_data():
-    with st.spinner(text="Laster inn kunnskapsbasen. Dette kan ta noen minutter."):
-        reader = SimpleDirectoryReader(input_dir="./data")
-        documents = reader.load_data()
-        index = VectorStoreIndex.from_documents(documents)
-        return index
-
-index = load_data()
-
 if "chat_engine" not in st.session_state.keys(): # Initialize the chat engine
-        st.session_state.chat_engine = index.as_chat_engine(chat_mode="context",
-                                                            llm=llm,
-                                                            system_prompt =(
-                                                                "Always respond in the query's language. As an expert on the FS system at the University of Agder,"
-                                                                " your primary role is to provide detailed answers based on the knowledgebase. Provide all"
-                                                                " the instructions from the article body in a structural way so the user can follow it easily."
-                                                                " Always answer short and precise. Be very specific and to the point."
-                                                                " FS system stands for Felles studentsystem, and is a student information system consisting of"
-                                                                " databases, integrations, and user applications. FS is used by almost all Norwegian universities" 
-                                                                " and colleges. The FS database contains the institution's own student and study data."
-                                                                ),
-                                                            )
+    st.session_state.chat_engine = index.as_chat_engine(chat_mode="context",
+                                                        llm=llm,
+                                                        system_prompt=(
+                                                            "Always respond in the query's language. As an expert on the FS system at the University of Agder,"
+                                                            " your primary role is to provide detailed answers based on the knowledgebase. Provide all"
+                                                            " the instructions from the article body in a structural way so the user can follow it easily."
+                                                            " Always answer short and precise. Be very specific and to the point."
+                                                            " FS system stands for Felles studentsystem, and is a student information system consisting of"
+                                                            " databases, integrations, and user applications. FS is used by almost all Norwegian universities" 
+                                                            " and colleges. The FS database contains the institution's own student and study data."
+                                                        ),
+                                                        )
 
 if prompt := st.chat_input("Skriv en melding"): # Prompt for user input and save to chat history
     st.session_state.messages.append({"role": "user", "content": prompt})
