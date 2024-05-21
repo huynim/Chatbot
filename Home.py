@@ -20,6 +20,15 @@ async def generate_pdf(url, pdf_path):
         
         await page.goto(url)
         
+        # Wait for a specific element that indicates the page has loaded
+        try:
+            await page.wait_for_selector("body", timeout=10000)  # Wait for up to 10 seconds
+        except Exception as e:
+            st.write("Timeout while waiting for the page to load.")
+        
+        # Additional delay to ensure all elements are fully loaded
+        await asyncio.sleep(5)
+        
         await page.pdf(path=pdf_path, format='A4')
         
         await browser.close()
