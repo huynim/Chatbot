@@ -30,7 +30,7 @@ async def generate_pdf(url):
         
         # Generate unique filename based on timestamp
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        pdf_filename = f"document_{timestamp}.pdf"
+        pdf_filename = f"{timestamp}.pdf"
         pdf_path = os.path.join('data', pdf_filename)
         
         await page.pdf(path=pdf_path, format='A4')
