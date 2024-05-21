@@ -23,7 +23,7 @@ async def generate_pdf(url):
         try:
             await page.wait_for_selector("body", timeout=10000)  # Wait for up to 10 seconds
         except Exception as e:
-            st.write("Timeout while waiting for the page to load.")
+            st.write("Tidsavbrudd mens vi ventet på at siden skulle laste inn.")
         
         # Additional delay to ensure all elements are fully loaded
         await asyncio.sleep(5)
@@ -56,6 +56,6 @@ if st.session_state.generate_pdf_button:
         pdf_path = asyncio.run(generate_pdf(url))
         st.write(f"Nettside lastet ned: {pdf_path}")
     else:
-        st.write("Please enter a URL.")
+        st.write("Vennligst skriv inn en lenke.")
     # Reset the button flag
     st.session_state.generate_pdf_button = False
