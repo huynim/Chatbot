@@ -19,7 +19,7 @@ playwright install
 6. Legg dine lokale dokumenter i `data` mappen.
 7. Kjør Streamlit:
 ```bash
-streamlit run Home.py
+streamlit run Dokumenter.py
 ```
 # Google Colab
 Alternativt kan denne koden kjøres gjennom Google Colab:
