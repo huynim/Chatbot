@@ -6,3 +6,4 @@ llama-index-embeddings-langchain
 sentence-transformers==2.7.0
 langchain==0.1.17
 streamlit==1.33.0
+pyppeteer==2.0.0
