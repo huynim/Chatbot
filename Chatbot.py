@@ -21,7 +21,7 @@ from llama_index.core import SimpleDirectoryReader
 
 st.set_page_config(
     page_title="FSH",
-    page_icon="🐟",
+    page_icon="https://i.nuuls.com/3SdW8.png",
 )
 
 # Define variable to hold model weights naming 
@@ -58,10 +58,11 @@ settings.embed_model = embeddings
 
 # Function to load data
 def load_data():
-    reader = SimpleDirectoryReader(input_dir="./data")
-    documents = reader.load_data()
-    index = VectorStoreIndex.from_documents(documents)
-    return index
+    with st.spinner(text="Laster inn dokumentene..."):
+        reader = SimpleDirectoryReader(input_dir="./data")
+        documents = reader.load_data()
+        index = VectorStoreIndex.from_documents(documents)
+        return index
 
 index = load_data()
 
@@ -95,9 +96,6 @@ if "chat_engine" not in st.session_state.keys(): # Initialize the chat engine
                                                             " your primary role is to provide detailed answers based on the knowledgebase. Provide all"
                                                             " the instructions from the article body in a structural way so the user can follow it easily."
                                                             " Always answer short and precise. Be very specific and to the point."
-                                                            " FS system stands for Felles studentsystem, and is a student information system consisting of"
-                                                            " databases, integrations, and user applications. FS is used by almost all Norwegian universities" 
-                                                            " and colleges. The FS database contains the institution's own student and study data."
                                                         ),
                                                         )
 
