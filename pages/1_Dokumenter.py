@@ -6,7 +6,7 @@ from datetime import datetime
 
 st.set_page_config(
     page_title="FSH",
-    page_icon="https://i.nuuls.com/3SdW8.png",
+    page_icon="https://kappa.lol/_3Z91",
 )
 
 # Ensure the 'data' directory exists
