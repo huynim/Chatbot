@@ -1,23 +1,12 @@
 import streamlit as st
-# Import transformer classes for generaiton
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
-# Import torch for datatype attributes 
 import torch
-# Import the prompt wrapper
 from llama_index.core.prompts.prompts import SimpleInputPrompt
-# Import the llama index HF Wrapper
 from llama_index.llms.huggingface import HuggingFaceLLM
-# Bring in embeddings wrapper
 from llama_index.embeddings.langchain import LangchainEmbedding
-# Bring in HF embeddings - need these to represent document chunks
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
-# Bring in stuff to change service context
-from llama_index.core import Settings
-from llama_index.core import set_global_service_context
-from llama_index.core import ServiceContext
-# Import deps to load documents 
-from llama_index.core import VectorStoreIndex, download_loader
-from llama_index.core import SimpleDirectoryReader
+from llama_index.core import Settings, set_global_service_context, ServiceContext, VectorStoreIndex, download_loader, SimpleDirectoryReader, StorageContext, load_index_from_storage
+import os
 
 st.set_page_config(
     page_title="FSH",
@@ -56,12 +45,23 @@ settings.chunk_size = 1024
 settings.llm = llm
 settings.embed_model = embeddings
 
+# Ensure the 'storage' directory exists
+os.makedirs('storage', exist_ok=True)
+
 # Function to load data
+@st.cache_resource(show_spinner=False)
 def load_data():
-    with st.spinner(text="Laster inn dokumentene..."):
-        reader = SimpleDirectoryReader(input_dir="./data")
-        documents = reader.load_data()
-        index = VectorStoreIndex.from_documents(documents)
+    PERSISTED_DIR = "./storage"
+    if not os.path.exists(PERSISTED_DIR):
+        with st.spinner(text="Laster inn dokumentene..."):
+            reader = SimpleDirectoryReader(input_dir="./data")
+            documents = reader.load_data()
+            index = VectorStoreIndex.from_documents(documents)
+            index.storage_context.persist(persist_dir=PERSISTED_DIR)
+            return index
+    else:
+        storage_context = StorageContext.from_defaults(persist_dir=PERSISTED_DIR)
+        index = load_index_from_storage(storage_context)
         return index
 
 index = load_data()
