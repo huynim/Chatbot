@@ -21,7 +21,7 @@ from llama_index.core import SimpleDirectoryReader
 
 st.set_page_config(
     page_title="FSH",
-    page_icon="https://i.nuuls.com/3SdW8.png",
+    page_icon="https://kappa.lol/_3Z91",
 )
 
 # Define variable to hold model weights naming 
