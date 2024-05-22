@@ -19,6 +19,11 @@ from llama_index.core import ServiceContext
 from llama_index.core import VectorStoreIndex, download_loader
 from llama_index.core import SimpleDirectoryReader
 
+st.set_page_config(
+    page_title="FSH",
+    page_icon="🐟",
+)
+
 # Define variable to hold model weights naming 
 name = "bineric/NorskGPT-Llama-7B-v0.1"
 
