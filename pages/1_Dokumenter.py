@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 
 st.set_page_config(
-    page_title="FSH",
+    page_title="FSH - Dokumenter",
     page_icon="https://kappa.lol/_3Z91",
 )
 
