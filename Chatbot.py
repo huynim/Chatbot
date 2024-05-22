@@ -45,9 +45,6 @@ settings.chunk_size = 1024
 settings.llm = llm
 settings.embed_model = embeddings
 
-# Ensure the 'storage' directory exists
-os.makedirs('storage', exist_ok=True)
-
 # Function to load data
 @st.cache_resource(show_spinner=False)
 def load_data():
