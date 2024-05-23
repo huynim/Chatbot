@@ -4,7 +4,7 @@ import torch
 from llama_index.llms.huggingface import HuggingFaceLLM
 from llama_index.embeddings.langchain import LangchainEmbedding
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
-from llama_index.core import Settings, VectorStoreIndex, PersistedStorage
+from llama_index.core import Settings, VectorStoreIndex, StorageContext, load_index_from_storage
 import os
 import hashlib
 
@@ -46,7 +46,7 @@ settings.llm = llm
 settings.embed_model = embeddings
 
 def get_directory_hash(directory):
-    """Calculate a hash for all files in the given directory."""
+    # Calculate a hash for all files in the given directory.
     hash_md5 = hashlib.md5()
     for root, dirs, files in os.walk(directory):
         for file in sorted(files):
@@ -59,7 +59,7 @@ def get_directory_hash(directory):
 # Function to load data
 @st.cache_resource
 def load_data():
-    storage = PersistedStorage(storage_dir='./storage')
+    PERSISTED_DIR = "./storage"
     data_dir = "./data"
     data_hash_path = "./data_hash.txt"
     
@@ -73,14 +73,14 @@ def load_data():
     else:
         previous_hash = ""
     
-    if storage.exists() and previous_hash == current_hash:
+    if os.path.exists(PERSISTED_DIR) and previous_hash == current_hash:
         index = VectorStoreIndex.load(storage)
     else:
         with st.spinner(text="Laster inn dokumenter..."):
             reader = SimpleDirectoryReader(input_dir=data_dir)
             documents = reader.load_data()
             index = VectorStoreIndex.from_documents(documents)
-            index.save(storage)
+            index.storage_context.persist(persist_dir=PERSISTED_DIR)
         
         # Save the current hash to file
         with open(data_hash_path, 'w') as f:
