@@ -25,19 +25,23 @@ def get_tokenizer_model():
                                                  rope_scaling={"type": "dynamic", "factor": 2}, load_in_8bit=True) 
     return tokenizer, model
 
-tokenizer, model = get_tokenizer_model()
+@st.cache(allow_output_mutation=True)
+def create_llm_model():
+    tokenizer, model = get_tokenizer_model()
+    return HuggingFaceLLM(context_window=3900, 
+                          max_new_tokens=350,
+                          generate_kwargs={"temperature": 0.1, "do_sample": False}, 
+                          model=model, 
+                          tokenizer=tokenizer)
 
-# Create a HF LLM using the llama index wrapper 
-llm = HuggingFaceLLM(context_window=3900,
-                    max_new_tokens=350,
-                    generate_kwargs={"temperature": 0.1, "do_sample": False},
-                    model=model,
-                    tokenizer=tokenizer)
+@st.cache(allow_output_mutation=True)
+def create_embeddings_model():
+    return LangchainEmbedding(
+        HuggingFaceEmbeddings(model_name="BAAI/bge-small-en-v1.5")
+    )
 
-# Create and download embeddings instance 
-embeddings=LangchainEmbedding(
-    HuggingFaceEmbeddings(model_name="BAAI/bge-small-en-v1.5")
-)
+llm = create_llm_model()
+embeddings = create_embeddings_model()
 
 # Create new service context instance
 settings = Settings
@@ -60,11 +64,8 @@ def load_data(file_list):
             reader = SimpleDirectoryReader(input_dir="./data")
             documents = reader.load_data()
             index = VectorStoreIndex.from_documents(documents)
-            if not os.path.exists(PERSISTED_DIR):
-                index.storage_context.persist(persist_dir=PERSISTED_DIR)
-                return index
-            else:
-                return index
+            index.storage_context.persist(persist_dir=PERSISTED_DIR)
+            return index
     else:
         storage_context = StorageContext.from_defaults(persist_dir=PERSISTED_DIR)
         index = load_index_from_storage(storage_context)
