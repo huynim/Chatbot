@@ -38,7 +38,6 @@ def get_file_list(directory):
 
 # Function to load data
 @st.cache_data(show_spinner=False)
-PERSISTED_DIR = "./storage"
 
 def load_data(file_list):
         # Create and download embeddings instance
@@ -52,6 +51,7 @@ def load_data(file_list):
     settings.llm = llm
     settings.embed_model = embeddings
     
+    PERSISTED_DIR = "./storage"
     reader = SimpleDirectoryReader(input_dir="./data")
     documents = reader.load_data()
     index = VectorStoreIndex.from_documents(documents)
@@ -66,6 +66,7 @@ if 'file_list' not in st.session_state or st.session_state.file_list != current_
         index = load_data(current_file_list)
         st.session_state.file_list = current_file_list
 else:
+    PERSISTED_DIR = "./storage"
     storage_context = StorageContext.from_defaults(persist_dir=PERSISTED_DIR)
     index = load_index_from_storage(storage_context)
 
