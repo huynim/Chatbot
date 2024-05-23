@@ -24,6 +24,7 @@ def get_tokenizer_model():
                                                  torch_dtype=torch.float16, 
                                                  rope_scaling={"type": "dynamic", "factor": 2}, load_in_8bit=True) 
     return tokenizer, model
+
 tokenizer, model = get_tokenizer_model()
 
 # Create a HF LLM using the llama index wrapper 
@@ -59,10 +60,12 @@ def load_data(file_list):
             reader = SimpleDirectoryReader(input_dir="./data")
             documents = reader.load_data()
             index = VectorStoreIndex.from_documents(documents)
-            index.storage_context.persist(persist_dir=PERSISTED_DIR)
-            return index
+            if not os.path.exists(PERSISTED_DIR):
+                index.storage_context.persist(persist_dir=PERSISTED_DIR)
+                return index
+            else:
+                return index
     else:
-        PERSISTED_DIR = "./storage"
         storage_context = StorageContext.from_defaults(persist_dir=PERSISTED_DIR)
         index = load_index_from_storage(storage_context)
         return index
