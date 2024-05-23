@@ -1,11 +1,12 @@
 import streamlit as st
-from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
-from llama_index.core.prompts.prompts import SimpleInputPrompt
 from llama_index.llms.huggingface import HuggingFaceLLM
 from llama_index.embeddings.langchain import LangchainEmbedding
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
-from llama_index.core import Settings, ServiceContext, VectorStoreIndex, SimpleDirectoryReader
+from llama_index.core import Settings, VectorStoreIndex, PersistedStorage
+import os
+import hashlib
 
 st.set_page_config(
     page_title="FSH - Chatbot",
@@ -34,21 +35,57 @@ llm = HuggingFaceLLM(context_window=3900,
                     tokenizer=tokenizer)
 
 # Create and download embeddings instance 
-embeddings=LangchainEmbedding(
+embeddings = LangchainEmbedding(
     HuggingFaceEmbeddings(model_name="BAAI/bge-small-en-v1.5")
 )
 
 # Create new service context instance
-settings = Settings
+settings = Settings()
 settings.chunk_size = 1024
 settings.llm = llm
 settings.embed_model = embeddings
 
+def get_directory_hash(directory):
+    """Calculate a hash for all files in the given directory."""
+    hash_md5 = hashlib.md5()
+    for root, dirs, files in os.walk(directory):
+        for file in sorted(files):
+            file_path = os.path.join(root, file)
+            with open(file_path, 'rb') as f:
+                while chunk := f.read(8192):
+                    hash_md5.update(chunk)
+    return hash_md5.hexdigest()
+
 # Function to load data
+@st.cache_resource
 def load_data():
-    reader = SimpleDirectoryReader(input_dir="./data")
-    documents = reader.load_data()
-    index = VectorStoreIndex.from_documents(documents)
+    storage = PersistedStorage(storage_dir='./storage')
+    data_dir = "./data"
+    data_hash_path = "./data_hash.txt"
+    
+    # Calculate current data directory hash
+    current_hash = get_directory_hash(data_dir)
+    
+    # Read the previous hash from file, if it exists
+    if os.path.exists(data_hash_path):
+        with open(data_hash_path, 'r') as f:
+            previous_hash = f.read()
+    else:
+        previous_hash = ""
+    
+    if storage.exists() and previous_hash == current_hash:
+        index = VectorStoreIndex.load(storage)
+    else:
+        with st.spinner(text="Laster inn dokumenter..."):
+            reader = SimpleDirectoryReader(input_dir=data_dir)
+            documents = reader.load_data()
+            index = VectorStoreIndex.from_documents(documents)
+            index.save(storage)
+        
+        # Save the current hash to file
+        with open(data_hash_path, 'w') as f:
+            f.write(current_hash)
+    
     return index
 
 index = load_data()
