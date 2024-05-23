@@ -36,21 +36,21 @@ llm = HuggingFaceLLM(context_window=3900,
 def get_file_list(directory):
     return sorted([os.path.join(directory, f) for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))])
 
+def create_embeddings():
+    return LangchainEmbedding(HuggingFaceEmbeddings(model_name="BAAI/bge-small-en-v1.5"))
+
+if 'embeddings' not in st.session_state:
+    st.session_state.embeddings = create_embeddings()
+
+# Create new service context instance
+settings = Settings
+settings.chunk_size = 1024
+settings.llm = llm
+settings.embed_model = embeddings
+
 # Function to load data
 @st.cache_data(show_spinner=False)
-
 def load_data(file_list):
-        # Create and download embeddings instance
-    embeddings = LangchainEmbedding(
-        HuggingFaceEmbeddings(model_name="BAAI/bge-small-en-v1.5")
-    )
-    
-    # Create new service context instance
-    settings = Settings
-    settings.chunk_size = 1024
-    settings.llm = llm
-    settings.embed_model = embeddings
-    
     PERSISTED_DIR = "./storage"
     reader = SimpleDirectoryReader(input_dir="./data")
     documents = reader.load_data()
