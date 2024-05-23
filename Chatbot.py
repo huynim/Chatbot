@@ -56,13 +56,13 @@ def load_data(file_list):
     index.storage_context.persist(persist_dir=PERSISTED_DIR)
     return index
 
-data_dir = "./data"
-current_file_list = get_file_list(data_dir)
+current_file_list = get_file_list("./data")
 
 # Check if we need to reload data
 if 'file_list' not in st.session_state or st.session_state.file_list != current_file_list:
-    index = load_data(current_file_list)
-    st.session_state.file_list = current_file_list
+    with st.spinner(text="Laster inn dokumentene..."):
+        index = load_data()
+        st.session_state.file_list = current_file_list
 else:
     PERSISTED_DIR = "./storage"
     storage_context = StorageContext.from_defaults(persist_dir=PERSISTED_DIR)
