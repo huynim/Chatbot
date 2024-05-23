@@ -48,7 +48,7 @@ def get_file_list(directory):
 
 # Function to load data
 @st.cache_data
-def load_data(file_list):
+def load_data():
     PERSISTED_DIR = "./storage"
     reader = SimpleDirectoryReader(input_dir="./data")
     documents = reader.load_data()
