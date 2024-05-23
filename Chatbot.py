@@ -35,7 +35,7 @@ llm = HuggingFaceLLM(context_window=3900,
 
 # Create and download embeddings instance 
 embeddings = LangchainEmbedding(
-    HuggingFaceEmbeddings(model_name="BAAI/bge-small-en-v1.5")
+    embedding_model=HuggingFaceEmbeddings(model_name="BAAI/bge-small-en-v1.5")
 )
 
 # Create new service context instance
