@@ -34,8 +34,9 @@ llm = HuggingFaceLLM(context_window=3900,
                     tokenizer=tokenizer)
 
 # Create and download embeddings instance 
-embedding_model = HuggingFaceEmbeddings(model_name="BAAI/bge-small-en-v1.5")
-embeddings = LangchainEmbedding(embedding_model)
+embeddings=LangchainEmbedding(
+    HuggingFaceEmbeddings(model_name="BAAI/bge-small-en-v1.5")
+)
 
 # Create new service context instance
 settings = Settings
@@ -47,8 +48,8 @@ def get_file_list(directory):
     return sorted([os.path.join(directory, f) for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))])
 
 # Function to load data
-@st.cache_data
-def load_data():
+@st.cache_data(show_spinner=False)
+def load_data(file_list):
     PERSISTED_DIR = "./storage"
     reader = SimpleDirectoryReader(input_dir="./data")
     documents = reader.load_data()
@@ -61,10 +62,9 @@ current_file_list = get_file_list("./data")
 # Check if we need to reload data
 if 'file_list' not in st.session_state or st.session_state.file_list != current_file_list:
     with st.spinner(text="Laster inn dokumentene..."):
-        index = load_data()
+        index = load_data(current_file_list)
         st.session_state.file_list = current_file_list
 else:
-    PERSISTED_DIR = "./storage"
     storage_context = StorageContext.from_defaults(persist_dir=PERSISTED_DIR)
     index = load_index_from_storage(storage_context)
 
