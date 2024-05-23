@@ -42,15 +42,13 @@ def create_embeddings():
 if 'embeddings' not in st.session_state:
     st.session_state.embeddings = create_embeddings()
 
-# Create new service context instance
-settings = Settings
-settings.chunk_size = 1024
-settings.llm = llm
-settings.embed_model = embeddings
-
 # Function to load data
 @st.cache_data(show_spinner=False)
 def load_data(file_list):
+    # Create new service context instance
+    settings = Settings(chunk_size=1024, llm=llm, embed_model=embeddings)
+    service_context = ServiceContext.from_settings(settings)
+    
     PERSISTED_DIR = "./storage"
     reader = SimpleDirectoryReader(input_dir="./data")
     documents = reader.load_data()
