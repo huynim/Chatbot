@@ -46,7 +46,7 @@ def load_data(file_list):
     )
     
     # Create new service context instance
-    settings = Settings()
+    settings = Settings
     settings.chunk_size = 1024
     settings.llm = llm
     settings.embed_model = embeddings
