@@ -15,7 +15,7 @@ st.set_page_config(
 # Define variable to hold model weights naming 
 name = "bineric/NorskGPT-Llama-7B-v0.1"
 
-@st.cache_resource
+@st.cache_resource(show_spinner=False)
 def get_tokenizer_model():
     # Create tokenizer
     tokenizer = AutoTokenizer.from_pretrained(name, cache_dir='./model/')
@@ -25,7 +25,7 @@ def get_tokenizer_model():
                                                  rope_scaling={"type": "dynamic", "factor": 2}, load_in_8bit=True) 
     return tokenizer, model
 
-@st.cache(allow_output_mutation=True)
+@st.cache_resource(allow_output_mutation=True)
 def create_llm_model():
     tokenizer, model = get_tokenizer_model()
     return HuggingFaceLLM(context_window=3900, 
@@ -34,7 +34,7 @@ def create_llm_model():
                           model=model, 
                           tokenizer=tokenizer)
 
-@st.cache(allow_output_mutation=True)
+@st.cache_resource(allow_output_mutation=True)
 def create_embeddings_model():
     return LangchainEmbedding(
         HuggingFaceEmbeddings(model_name="BAAI/bge-small-en-v1.5")
