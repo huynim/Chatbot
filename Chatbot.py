@@ -40,7 +40,7 @@ embeddings = LangchainEmbedding(
 )
 
 # Create new service context instance
-settings = Settings()
+settings = Settings
 settings.chunk_size = 1024
 settings.llm = llm
 settings.embed_model = embeddings
@@ -74,7 +74,9 @@ def load_data():
         previous_hash = ""
     
     if os.path.exists(PERSISTED_DIR) and previous_hash == current_hash:
-        index = VectorStoreIndex.load(storage)
+        storage_context = StorageContext.from_defaults(persist_dir=PERSISTED_DIR)
+        index = load_index_from_storage(storage_context)
+        return index
     else:
         with st.spinner(text="Laster inn dokumenter..."):
             reader = SimpleDirectoryReader(input_dir=data_dir)
@@ -83,8 +85,8 @@ def load_data():
             index.storage_context.persist(persist_dir=PERSISTED_DIR)
         
         # Save the current hash to file
-        with open(data_hash_path, 'w') as f:
-            f.write(current_hash)
+            with open(data_hash_path, 'w') as f:
+                f.write(current_hash)
     
     return index
 
