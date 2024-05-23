@@ -4,7 +4,7 @@ import torch
 from llama_index.llms.huggingface import HuggingFaceLLM
 from llama_index.embeddings.langchain import LangchainEmbedding
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
-from llama_index.core import Settings, VectorStoreIndex, StorageContext, load_index_from_storage
+from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, StorageContext, load_index_from_storage
 import os
 import hashlib
 
