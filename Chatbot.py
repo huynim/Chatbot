@@ -6,7 +6,6 @@ from llama_index.embeddings.langchain import LangchainEmbedding
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, StorageContext, load_index_from_storage
 import os
-import hashlib
 
 st.set_page_config(
     page_title="FSH - Chatbot",
@@ -69,7 +68,6 @@ else:
     PERSISTED_DIR = "./storage"
     storage_context = StorageContext.from_defaults(persist_dir=PERSISTED_DIR)
     index = load_index_from_storage(storage_context)
-
 
 # Setup index query engine using LLM 
 chat_engine = index.as_query_engine()
