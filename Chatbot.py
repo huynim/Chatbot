@@ -39,33 +39,35 @@ embeddings=LangchainEmbedding(
 )
 
 # Create new service context instance
-settings = Settings(chunk_size=1024, llm=llm, embed_model=embeddings)
-service_context = ServiceContext.from_settings(settings)
+settings = Settings
+settings.chunk_size = 1024
+settings.llm = llm
+settings.embed_model = embeddings
 
 def get_file_list(directory):
     return sorted([os.path.join(directory, f) for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))])
+
+current_file_list = get_file_list("./data")
 
 # Function to load data
 @st.cache_data(show_spinner=False)
 def load_data(file_list):    
     PERSISTED_DIR = "./storage"
-    reader = SimpleDirectoryReader(input_dir="./data")
-    documents = reader.load_data()
-    index = VectorStoreIndex.from_documents(documents)
-    index.storage_context.persist(persist_dir=PERSISTED_DIR)
-    return index
+    # Check if we need to reload data
+    if 'file_list' not in st.session_state or st.session_state.file_list != current_file_list:
+        with st.spinner(text="Laster inn dokumentene..."):
+            reader = SimpleDirectoryReader(input_dir="./data")
+            documents = reader.load_data()
+            index = VectorStoreIndex.from_documents(documents)
+            index.storage_context.persist(persist_dir=PERSISTED_DIR)
+            return index
+    else:
+        PERSISTED_DIR = "./storage"
+        storage_context = StorageContext.from_defaults(persist_dir=PERSISTED_DIR)
+        index = load_index_from_storage(storage_context)
+        return index
 
-current_file_list = get_file_list("./data")
-
-# Check if we need to reload data
-if 'file_list' not in st.session_state or st.session_state.file_list != current_file_list:
-    with st.spinner(text="Laster inn dokumentene..."):
-        index = load_data(current_file_list)
-        st.session_state.file_list = current_file_list
-else:
-    PERSISTED_DIR = "./storage"
-    storage_context = StorageContext.from_defaults(persist_dir=PERSISTED_DIR)
-    index = load_index_from_storage(storage_context)
+index = load_data(current_file_list)
 
 # Setup index query engine using LLM 
 chat_engine = index.as_query_engine()
