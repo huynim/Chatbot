@@ -47,17 +47,21 @@ settings.llm = llm
 settings.embed_model = embeddings
 
 # Function to delete the storage folder
-def delete_storage_folder():
+def delete_storage():
     shutil.rmtree("./storage", ignore_errors=True)
 
+# Function to get a sorted list of all file paths in the given directory
+def get_file_list(directory):
+    return sorted([os.path.join(directory, f) for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))])
+
 # Check for new files in the data folder and delete the storage folder if there are any
-def check_storage_folder():
-    data_files = os.listdir("./data")
+def check_storage():
+    data_files = get_file_list("./data")
     stored_files = st.session_state.get("stored_data_files", [])
     if data_files != stored_files:
-        delete_storage_folder()
+        delete_storage()
         st.session_state.stored_data_files = data_files
-check_storage_folder()
+check_storage()
 
 @st.cache_resource(show_spinner=False)
 def load_data():    
