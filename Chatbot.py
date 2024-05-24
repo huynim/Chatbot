@@ -6,6 +6,7 @@ from llama_index.embeddings.langchain import LangchainEmbedding
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, StorageContext, load_index_from_storage
 import os
+import shutil
 
 st.set_page_config(
     page_title="FSH - Chatbot",
@@ -15,7 +16,7 @@ st.set_page_config(
 # Define variable to hold model weights naming 
 name = "bineric/NorskGPT-Llama-7B-v0.1"
 
-@st.cache_resource(show_spinner=False)
+@st.cache_resource
 def get_tokenizer_model():
     # Create tokenizer
     tokenizer = AutoTokenizer.from_pretrained(name, cache_dir='./model/')
@@ -25,26 +26,22 @@ def get_tokenizer_model():
                                                  rope_scaling={"type": "dynamic", "factor": 2}, load_in_8bit=True) 
     return tokenizer, model
 
-@st.cache_resource(experimental_allow_widgets=True)
-def create_llm_model():
-    tokenizer, model = get_tokenizer_model()
-    return HuggingFaceLLM(context_window=3900, 
-                          max_new_tokens=350,
-                          generate_kwargs={"temperature": 0.1, "do_sample": False}, 
-                          model=model, 
-                          tokenizer=tokenizer)
+tokenizer, model = get_tokenizer_model()
 
-@st.cache_resource(experimental_allow_widgets=True)
-def create_embeddings_model():
-    return LangchainEmbedding(
-        HuggingFaceEmbeddings(model_name="BAAI/bge-small-en-v1.5")
-    )
+# Create a HF LLM using the llama index wrapper 
+llm = HuggingFaceLLM(context_window=3900,
+                    max_new_tokens=350,
+                    generate_kwargs={"temperature": 0.1, "do_sample": False},
+                    model=model,
+                    tokenizer=tokenizer)
 
-llm = create_llm_model()
-embeddings = create_embeddings_model()
+# Create and download embeddings instance 
+embeddings = LangchainEmbedding(
+    HuggingFaceEmbeddings(model_name="BAAI/bge-small-en-v1.5")
+)
 
 # Create new service context instance
-settings = Settings
+settings = Settings()
 settings.chunk_size = 1024
 settings.llm = llm
 settings.embed_model = embeddings
@@ -54,12 +51,24 @@ def get_file_list(directory):
 
 current_file_list = get_file_list("./data")
 
-# Function to load data
 @st.cache_data(show_spinner=False)
+def remove_storage_directory():
+    directory = "./storage"
+    if os.path.exists(directory):
+        shutil.rmtree(directory)
+        print(f"Directory '{directory}' has been removed.")
+    else:
+        print(f"Directory '{directory}' does not exist.")
+
+# Check if we need to reload data
+if 'file_list' not in st.session_state or st.session_state.file_list != current_file_list:
+    remove_storage_directory()
+
+# Function to load data
 def load_data(file_list):    
     PERSISTED_DIR = "./storage"
     # Check if we need to reload data
-    if 'file_list' not in st.session_state or st.session_state.file_list != current_file_list:
+    if not os.path.exists(PERSISTED_DIR):
         with st.spinner(text="Laster inn dokumentene..."):
             reader = SimpleDirectoryReader(input_dir="./data")
             documents = reader.load_data()
