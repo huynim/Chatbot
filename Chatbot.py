@@ -61,19 +61,16 @@ def load_data():
         index = load_index_from_storage(storage_context)
         return index
 
-def check_and_remove_storage_directory():
+def update_storage():
     current_file_list = [(f, os.path.getmtime(os.path.join("./data", f))) for f in os.listdir("./data") if os.path.isfile(os.path.join("./data", f))]
     current_timestamp = max((timestamp for _, timestamp in current_file_list), default=0)
     if 'latest_timestamp' not in st.session_state or st.session_state.latest_timestamp != current_timestamp:
         storage_directory = "./storage"
         if os.path.exists(storage_directory):
             shutil.rmtree(storage_directory)
-            print(f"Directory '{storage_directory}' has been removed.")
-        else:
-            print(f"Directory '{storage_directory}' does not exist.")
         st.session_state.latest_timestamp = current_timestamp
 
-check_and_remove_storage_directory()
+update_storage()
 index = load_data()
 
 # Setup index query engine using LLM 
