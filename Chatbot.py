@@ -51,12 +51,13 @@ def delete_storage_folder():
     shutil.rmtree("./storage", ignore_errors=True)
 
 # Check for new files in the data folder and delete the storage folder if there are any
-initial_files = os.listdir("./data")
-if "data_files" not in st.session_state:
-    st.session_state.data_files = initial_files
-elif initial_files != st.session_state.data_files:
-    delete_storage_folder()
-    st.session_state.data_files = initial_files
+def check_storage_folder():
+    data_files = os.listdir("./data")
+    stored_files = st.session_state.get("stored_data_files", [])
+    if data_files != stored_files:
+        delete_storage_folder()
+        st.session_state.stored_data_files = data_files
+check_storage_folder()
 
 @st.cache_resource(show_spinner=False)
 def load_data():    
