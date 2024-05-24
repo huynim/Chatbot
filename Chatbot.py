@@ -16,6 +16,7 @@ st.set_page_config(
 # Define variable to hold model weights naming 
 name = "bineric/NorskGPT-Llama-7B-v0.1"
 
+@st.cache_resource
 def get_tokenizer_model():
     # Create tokenizer
     tokenizer = AutoTokenizer.from_pretrained(name, cache_dir='./model/')
