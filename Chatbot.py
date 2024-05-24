@@ -41,7 +41,7 @@ embeddings = LangchainEmbedding(
 )
 
 # Create new service context instance
-settings = Settings()
+settings = Settings
 settings.chunk_size = 1024
 settings.llm = llm
 settings.embed_model = embeddings
@@ -65,9 +65,8 @@ if 'file_list' not in st.session_state or st.session_state.file_list != current_
     remove_storage_directory()
 
 # Function to load data
-def load_data(file_list):    
+def load_data():    
     PERSISTED_DIR = "./storage"
-    # Check if we need to reload data
     if not os.path.exists(PERSISTED_DIR):
         with st.spinner(text="Laster inn dokumentene..."):
             reader = SimpleDirectoryReader(input_dir="./data")
@@ -80,7 +79,7 @@ def load_data(file_list):
         index = load_index_from_storage(storage_context)
         return index
 
-index = load_data(current_file_list)
+index = load_data()
 
 # Setup index query engine using LLM 
 chat_engine = index.as_query_engine()
