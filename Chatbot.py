@@ -46,25 +46,7 @@ settings.chunk_size = 1024
 settings.llm = llm
 settings.embed_model = embeddings
 
-def get_file_list(directory):
-    return sorted([os.path.join(directory, f) for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))])
-
-current_file_list = get_file_list("./data")
-
 @st.cache_data(show_spinner=False)
-def remove_storage_directory():
-    directory = "./storage"
-    if os.path.exists(directory):
-        shutil.rmtree(directory)
-        print(f"Directory '{directory}' has been removed.")
-    else:
-        print(f"Directory '{directory}' does not exist.")
-
-# Check if we need to reload data
-if 'file_list' not in st.session_state or st.session_state.file_list != current_file_list:
-    remove_storage_directory()
-
-# Function to load data
 def load_data():    
     PERSISTED_DIR = "./storage"
     if not os.path.exists(PERSISTED_DIR):
@@ -79,6 +61,19 @@ def load_data():
         index = load_index_from_storage(storage_context)
         return index
 
+def check_and_remove_storage_directory():
+    current_file_list = [(f, os.path.getmtime(os.path.join("./data", f))) for f in os.listdir("./data") if os.path.isfile(os.path.join("./data", f))]
+    current_timestamp = max((timestamp for _, timestamp in current_file_list), default=0)
+    if 'latest_timestamp' not in st.session_state or st.session_state.latest_timestamp != current_timestamp:
+        storage_directory = "./storage"
+        if os.path.exists(storage_directory):
+            shutil.rmtree(storage_directory)
+            print(f"Directory '{storage_directory}' has been removed.")
+        else:
+            print(f"Directory '{storage_directory}' does not exist.")
+        st.session_state.latest_timestamp = current_timestamp
+
+check_and_remove_storage_directory()
 index = load_data()
 
 # Setup index query engine using LLM 
