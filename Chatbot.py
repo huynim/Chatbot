@@ -16,7 +16,6 @@ st.set_page_config(
 # Define variable to hold model weights naming 
 name = "bineric/NorskGPT-Llama-7B-v0.1"
 
-@st.cache_resource
 def get_tokenizer_model():
     # Create tokenizer
     tokenizer = AutoTokenizer.from_pretrained(name, cache_dir='./model/')
@@ -46,7 +45,19 @@ settings.chunk_size = 1024
 settings.llm = llm
 settings.embed_model = embeddings
 
-@st.cache_data(show_spinner=False)
+# Function to delete the storage folder
+def delete_storage_folder():
+    shutil.rmtree("./storage", ignore_errors=True)
+
+# Check for new files in the data folder and delete the storage folder if there are any
+initial_files = os.listdir("./data")
+if "data_files" not in st.session_state:
+    st.session_state.data_files = initial_files
+elif initial_files != st.session_state.data_files:
+    delete_storage_folder()
+    st.session_state.data_files = initial_files
+
+@st.cache_resource(show_spinner=False)
 def load_data():    
     PERSISTED_DIR = "./storage"
     if not os.path.exists(PERSISTED_DIR):
@@ -61,16 +72,6 @@ def load_data():
         index = load_index_from_storage(storage_context)
         return index
 
-def update_storage():
-    current_file_list = [(f, os.path.getmtime(os.path.join("./data", f))) for f in os.listdir("./data") if os.path.isfile(os.path.join("./data", f))]
-    current_timestamp = max((timestamp for _, timestamp in current_file_list), default=0)
-    if 'latest_timestamp' not in st.session_state or st.session_state.latest_timestamp != current_timestamp:
-        storage_directory = "./storage"
-        if os.path.exists(storage_directory):
-            shutil.rmtree(storage_directory)
-        st.session_state.latest_timestamp = current_timestamp
-
-update_storage()
 index = load_data()
 
 # Setup index query engine using LLM 
