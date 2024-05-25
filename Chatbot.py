@@ -67,11 +67,12 @@ check_storage()
 def load_data():    
     PERSISTED_DIR = "./storage"
     if not os.path.exists(PERSISTED_DIR):
-        reader = SimpleDirectoryReader(input_dir="./data")
-        documents = reader.load_data()
-        index = VectorStoreIndex.from_documents(documents)
-        index.storage_context.persist(persist_dir=PERSISTED_DIR)
-        return index
+        with st.spinner(text="Laster inn dokumentene..."):
+            reader = SimpleDirectoryReader(input_dir="./data")
+            documents = reader.load_data()
+            index = VectorStoreIndex.from_documents(documents)
+            index.storage_context.persist(persist_dir=PERSISTED_DIR)
+            return index
     else:
         storage_context = StorageContext.from_defaults(persist_dir=PERSISTED_DIR)
         index = load_index_from_storage(storage_context)
