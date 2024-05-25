@@ -46,21 +46,17 @@ settings.chunk_size = 1024
 settings.llm = llm
 settings.embed_model = embeddings
 
-# Function to delete the storage
-def delete_storage():
-    shutil.rmtree("./storage", ignore_errors=True)
-
-# Function to get a sorted list of all file paths
 def get_file_list(directory):
     return sorted([os.path.join(directory, f) for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))])
 
 # Check for new files
 def check_storage():
-    data_files = get_file_list("./data")
-    stored_files = st.session_state.get("stored_data_files", [])
-    if data_files != stored_files:
-        delete_storage()
-        st.session_state.stored_data_files = data_files
+    data_dir = "./data"
+    current_file_list = get_file_list(data_dir)
+    if 'file_list' not in st.session_state or st.session_state.file_list != current_file_list:
+        shutil.rmtree("./storage", ignore_errors=True)
+        st.session_state.file_list = current_file_list
+
 check_storage()
 
 # Function to load data
