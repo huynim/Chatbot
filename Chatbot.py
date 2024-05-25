@@ -46,15 +46,15 @@ settings.chunk_size = 1024
 settings.llm = llm
 settings.embed_model = embeddings
 
-# Function to delete the storage folder
+# Function to delete the storage
 def delete_storage():
     shutil.rmtree("./storage", ignore_errors=True)
 
-# Function to get a sorted list of all file paths in the given directory
+# Function to get a sorted list of all file paths
 def get_file_list(directory):
     return sorted([os.path.join(directory, f) for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))])
 
-# Check for new files in the data folder and delete the storage folder if there are any
+# Check for new files
 def check_storage():
     data_files = get_file_list("./data")
     stored_files = st.session_state.get("stored_data_files", [])
@@ -63,16 +63,15 @@ def check_storage():
         st.session_state.stored_data_files = data_files
 check_storage()
 
-@st.cache_resource(show_spinner=False)
+# Function to load data
 def load_data():    
     PERSISTED_DIR = "./storage"
     if not os.path.exists(PERSISTED_DIR):
-        with st.spinner(text="Laster inn dokumentene..."):
-            reader = SimpleDirectoryReader(input_dir="./data")
-            documents = reader.load_data()
-            index = VectorStoreIndex.from_documents(documents)
-            index.storage_context.persist(persist_dir=PERSISTED_DIR)
-            return index
+        reader = SimpleDirectoryReader(input_dir="./data")
+        documents = reader.load_data()
+        index = VectorStoreIndex.from_documents(documents)
+        index.storage_context.persist(persist_dir=PERSISTED_DIR)
+        return index
     else:
         storage_context = StorageContext.from_defaults(persist_dir=PERSISTED_DIR)
         index = load_index_from_storage(storage_context)
