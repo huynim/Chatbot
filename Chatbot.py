@@ -56,7 +56,6 @@ def check_storage():
     if 'file_list' not in st.session_state or st.session_state.file_list != current_file_list:
         shutil.rmtree("./storage", ignore_errors=True)
         st.session_state.file_list = current_file_list
-    else:
         st.cache_data.clear()
 
 check_storage()
