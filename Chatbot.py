@@ -49,15 +49,11 @@ settings.embed_model = embeddings
 def get_file_list(directory):
     return sorted([os.path.join(directory, f) for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))])
 
-# Check for new files
-def check_storage():
-    data_dir = "./data"
-    current_file_list = get_file_list(data_dir)
-    if 'file_list' not in st.session_state or st.session_state.file_list != current_file_list:
-        shutil.rmtree("./storage", ignore_errors=True)
-        st.session_state.file_list = current_file_list
-
-check_storage()
+# Check if we need to reload data
+current_file_list = get_file_list("./data")
+if 'file_list' not in st.session_state or st.session_state.file_list != current_file_list:
+    shutil.rmtree("./storage", ignore_errors=True)
+    st.session_state.file_list = current_file_list
 
 # Function to load data
 def load_data():    
