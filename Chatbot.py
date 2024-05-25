@@ -50,10 +50,14 @@ def get_file_list(directory):
     return sorted([os.path.join(directory, f) for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))])
 
 # Check if we need to reload data
-current_file_list = get_file_list("./data")
-if 'file_list' not in st.session_state or st.session_state.file_list != current_file_list:
-    shutil.rmtree("./storage", ignore_errors=True)
-    st.session_state.file_list = current_file_list
+@st.cache_data(show_spinner=False)
+def check_storage():
+    current_file_list = get_file_list("./data")
+    if 'file_list' not in st.session_state or st.session_state.file_list != current_file_list:
+        shutil.rmtree("./storage", ignore_errors=True)
+        st.session_state.file_list = current_file_list
+
+check_storage()
 
 # Function to load data
 def load_data():    
