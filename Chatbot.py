@@ -1,12 +1,13 @@
-import streamlit as st
-from transformers import AutoModelForCausalLM, AutoTokenizer
+import os
 import torch
+import shutil
+import streamlit as st
+from pathlib import Path
+from transformers import AutoModelForCausalLM, AutoTokenizer
 from llama_index.llms.huggingface import HuggingFaceLLM
 from llama_index.embeddings.langchain import LangchainEmbedding
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, StorageContext, load_index_from_storage
-import os
-import shutil
 
 st.set_page_config(
     page_title="FSH - Chatbot",
@@ -47,7 +48,7 @@ settings.llm = llm
 settings.embed_model = embeddings
 
 # Check if we need to reload data
-current_file_list = sorted([os.path.join("./data", f) for f in os.listdir("./data") if os.path.isfile(os.path.join("./data", f))])
+current_file_list = sorted([f for f in Path('./data').iterdir() if f.is_file()])
 if 'file_list' not in st.session_state or st.session_state.file_list != current_file_list:
     shutil.rmtree("./storage", ignore_errors=True)
     st.session_state.file_list = current_file_list
