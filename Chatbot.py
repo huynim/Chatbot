@@ -46,11 +46,8 @@ settings.chunk_size = 1024
 settings.llm = llm
 settings.embed_model = embeddings
 
-def get_file_list(directory):
-    return sorted([os.path.join(directory, f) for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))])
-
 # Check if we need to reload data
-current_file_list = get_file_list("./data")
+current_file_list = sorted([os.path.join("./data", f) for f in os.listdir("./data") if os.path.isfile(os.path.join("./data", f))])
 if 'file_list' not in st.session_state or st.session_state.file_list != current_file_list:
     shutil.rmtree("./storage", ignore_errors=True)
     st.session_state.file_list = current_file_list
