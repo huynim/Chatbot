@@ -1,7 +1,7 @@
+import os
 import streamlit as st
 import asyncio
 from playwright.async_api import async_playwright
-import os
 from datetime import datetime
 
 st.set_page_config(
@@ -9,21 +9,20 @@ st.set_page_config(
     page_icon="https://kappa.lol/_3Z91",
 )
 
-# Ensure the 'data' directory exists
-os.makedirs('data', exist_ok=True)
+# Create data directory if not exist
+os.makedirs("./data", exist_ok=True)
 
 async def generate_pdf(url):
     async with async_playwright() as p:
         browser = await p.chromium.launch()
-        page = await browser.new_page()
-        
+        page = await browser.new_page()      
         await page.goto(url)
         
         # Wait for a specific element that indicates the page has loaded
         try:
             await page.wait_for_selector("body", timeout=10000)  # Wait for up to 10 seconds
         except Exception as e:
-            st.write("Tidsavbrudd mens vi ventet på at siden skulle laste inn.")
+            st.write("Tidsavbrudd mens siden skulle laste inn.")
         
         # Additional delay to ensure all elements are fully loaded
         await asyncio.sleep(5)
@@ -33,13 +32,11 @@ async def generate_pdf(url):
         pdf_filename = f"{timestamp}.pdf"
         pdf_path = os.path.join('data', pdf_filename)
         
-        await page.pdf(path=pdf_path, format='A4')
-        
+        await page.pdf(path=pdf_path, format='A4') 
         await browser.close()
-        
         return pdf_path
 
-st.text_input("Lenke til nettsted:", key="url", placeholder="Skriv inn lenken")
+st.text_input("Lenke til nettsted:", key="url", placeholder="Skriv inn en lenke")
 
 if 'generate_pdf_button' not in st.session_state:
     st.session_state.generate_pdf_button = False
