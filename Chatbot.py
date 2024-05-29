@@ -2,7 +2,6 @@ import os
 import torch
 import shutil
 import streamlit as st
-import streamlit.components.v1 as components
 from pathlib import Path
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from llama_index.llms.huggingface import HuggingFaceLLM
@@ -64,11 +63,7 @@ def load_data():
             index = VectorStoreIndex.from_documents(documents)
             index.storage_context.persist(persist_dir=PERSISTED_DIR)
             # Inject JavaScript to reload the page
-            components.html("""
-                <script>
-                    window.location.reload();
-                </script>
-            """, height=0)
+            st.markdown("<script>window.location.reload();</script>", unsafe_allow_html=True)
             return index
     else:
         storage_context = StorageContext.from_defaults(persist_dir=PERSISTED_DIR)
