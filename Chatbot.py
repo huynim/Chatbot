@@ -62,7 +62,7 @@ def store_file_list(file_list):
 
 # Retrieve file list from local storage
 def retrieve_file_list():
-    file_list_json = st.session_state.get("file_list_json")
+    file_list_json = st.write('<script>localStorage.getItem("file_list")</script>', unsafe_allow_html=True)
     if file_list_json:
         return json.loads(file_list_json)
     return None
