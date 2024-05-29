@@ -48,38 +48,11 @@ settings.chunk_size = 1024
 settings.llm = llm
 settings.embed_model = embeddings
 
-# Function to store file list in local storage
-def store_file_list(file_list):
-    file_list_json = json.dumps(file_list)
-    st.write(
-        f"""
-        <script>
-        localStorage.setItem('file_list', '{file_list_json}');
-        </script>
-        """,
-        unsafe_allow_html=True
-    )
-
-# Retrieve file list from local storage
-def retrieve_file_list():
-    file_list_json = st.write('<script>localStorage.getItem("file_list")</script>', unsafe_allow_html=True)
-    if file_list_json:
-        return json.loads(file_list_json)
-    return None
-
 # Check if we need to reload data
-current_file_list = sorted([f.name for f in Path('./data').iterdir() if f.is_file()])
-
-# Retrieve file list from local storage
-file_list = retrieve_file_list()
-
-if file_list != current_file_list:
+current_file_list = sorted([f for f in Path('./data').iterdir() if f.is_file()])
+if 'file_list' not in st.session_state or st.session_state.file_list != current_file_list:
     shutil.rmtree("./storage", ignore_errors=True)
-    store_file_list(current_file_list)
-    file_list = current_file_list
-
-if file_list is not None:
-    st.session_state.file_list_json = json.dumps(file_list)
+    st.session_state.file_list = current_file_list
 
 # Function to load data
 def load_data():    
