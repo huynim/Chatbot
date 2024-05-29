@@ -61,19 +61,25 @@ def store_file_list(file_list):
     )
 
 # Retrieve file list from local storage
-file_list = None
-if st.session_state.get("file_list_json"):
-    file_list = json.loads(st.session_state.file_list_json)
+def retrieve_file_list():
+    file_list_json = st.session_state.get("file_list_json")
+    if file_list_json:
+        return json.loads(file_list_json)
+    return None
 
 # Check if we need to reload data
 current_file_list = sorted([f.name for f in Path('./data').iterdir() if f.is_file()])
 
+# Retrieve file list from local storage
+file_list = retrieve_file_list()
+
 if file_list != current_file_list:
     shutil.rmtree("./storage", ignore_errors=True)
     store_file_list(current_file_list)
-else:
-    if file_list is not None:
-        current_file_list = file_list
+    file_list = current_file_list
+
+if file_list is not None:
+    st.session_state.file_list_json = json.dumps(file_list)
 
 # Function to load data
 def load_data():    
