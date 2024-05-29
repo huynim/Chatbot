@@ -63,7 +63,8 @@ def store_file_list(file_list):
         <script>
         localStorage.setItem('file_list', '{file_list_json}');
         </script>
-        """
+        """,
+        unsafe_allow_html=True
     )
 
 # Retrieve file list from local storage
@@ -76,7 +77,7 @@ if file_list != current_file_list:
     shutil.rmtree("./storage", ignore_errors=True)
     store_file_list(current_file_list)
 else:
-    file_list = json.loads(st.write('<script>localStorage.getItem("file_list")</script>'))
+    file_list = json.loads(st.write('<script>localStorage.getItem("file_list")</script>', unsafe_allow_html=True))
     if file_list is not None:
         current_file_list = file_list
 
