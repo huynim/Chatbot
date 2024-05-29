@@ -53,50 +53,29 @@ if 'file_list' not in st.session_state or st.session_state.file_list != current_
     shutil.rmtree("./storage", ignore_errors=True)
     st.session_state.file_list = current_file_list
 
-class SessionState:
-    def __init__(self):
-        self._run_id = 0
-
-    def run_id_changed(self):
-        self._run_id += 1
-
-def load_data():
+# Function to load data
+def load_data():    
     PERSISTED_DIR = "./storage"
-    session_state = SessionState()
-
+    new_data = False
     if not os.path.exists(PERSISTED_DIR):
         with st.spinner(text="Laster inn dokumentene..."):
             reader = SimpleDirectoryReader(input_dir="./data")
             documents = reader.load_data()
             index = VectorStoreIndex.from_documents(documents)
             index.storage_context.persist(persist_dir=PERSISTED_DIR)
-            session_state.run_id_changed()
-            return index
+            new_data = True
+            return index, new_data
     else:
         storage_context = StorageContext.from_defaults(persist_dir=PERSISTED_DIR)
         index = load_index_from_storage(storage_context)
-        return index
+        return index, new_data
+    
+def reload_page(new_data):
+    if new_data:
+        st.markdown("<script>location.reload(true);</script>", unsafe_allow_html=True)
 
-# Conditional HTML component to trigger page reload
-def trigger_page_reload(session_state):
-    st.markdown(
-        f"""
-        <div id="reload" hidden>
-            <script>
-                const session_state_run_id = {session_state._run_id};
-                const current_run_id = {st.report_thread.get_report_ctx().session.run_id};
-                if (session_state_run_id !== current_run_id) {{
-                    window.location.reload();
-                }}
-            </script>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-trigger_page_reload(SessionState())
-
-index = load_data()
+index, new_data = load_data()
+reload_page(new_data)
 
 # Setup index query engine using LLM 
 chat_engine = index.as_query_engine()
