@@ -2,6 +2,7 @@ import os
 import torch
 import shutil
 import streamlit as st
+import streamlit.components.v1 as components
 from pathlib import Path
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from llama_index.llms.huggingface import HuggingFaceLLM
@@ -47,19 +48,9 @@ settings.chunk_size = 1024
 settings.llm = llm
 settings.embed_model = embeddings
 
-@st.cache_data
-def get_sorted_file_list():
-    return sorted([f for f in Path('./data').iterdir() if f.is_file()])
-
-# Get the sorted file list using the cached function
-current_file_list = get_sorted_file_list()
-
-# Initialize session state if not already done
-if 'file_list' not in st.session_state:
-    st.session_state.file_list = []
-
-# Check if the file list in session state needs to be updated
-if st.session_state.file_list != current_file_list:
+# Check if we need to reload data
+current_file_list = sorted([f for f in Path('./data').iterdir() if f.is_file()])
+if 'file_list' not in st.session_state or st.session_state.file_list != current_file_list:
     shutil.rmtree("./storage", ignore_errors=True)
     st.session_state.file_list = current_file_list
 
@@ -72,6 +63,12 @@ def load_data():
             documents = reader.load_data()
             index = VectorStoreIndex.from_documents(documents)
             index.storage_context.persist(persist_dir=PERSISTED_DIR)
+            # Inject JavaScript to reload the page
+            components.html("""
+                <script>
+                    window.location.reload();
+                </script>
+            """, height=0)
             return index
     else:
         storage_context = StorageContext.from_defaults(persist_dir=PERSISTED_DIR)
