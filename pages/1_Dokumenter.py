@@ -1,8 +1,13 @@
 import os
-import streamlit as st
 import asyncio
+import platform
+import streamlit as st
 from playwright.async_api import async_playwright
 from datetime import datetime
+
+# Set event loop policy for Windows
+if platform.system() == "Windows":
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 st.set_page_config(
     page_title="FSH - Dokumenter",
