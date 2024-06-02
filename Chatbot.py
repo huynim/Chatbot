@@ -51,11 +51,7 @@ settings.embed_model = embeddings
 # Check if we need to reload data
 current_file_list = sorted([f for f in Path('./data').iterdir() if f.is_file()])
 if 'file_list' not in st.session_state or st.session_state.file_list != current_file_list:
-    if 'file_list' in st.session_state:
-        # Remove files that are no longer present in current_file_list
-        for file in st.session_state.file_list:
-            if file not in current_file_list:
-                file.unlink()
+    shutil.rmtree("./storage", ignore_errors=True)
     st.session_state.file_list = current_file_list
 
 # Function to load data
